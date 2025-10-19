@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import List
 
 from pydantic import BaseModel, Field
 
@@ -29,7 +29,7 @@ class FabricGroup(FabricObject):
     )
 
     # Child objects
-    objects: List[Dict[str, Any]] = Field(
+    objects: List[FabricObject] = Field(
         default_factory=list, description="Child objects in the group"
     )
 

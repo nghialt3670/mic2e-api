@@ -2,13 +2,13 @@ import inspect
 from functools import wraps
 from typing import Callable, List
 
+from chat2edit.execution.decorators import exclude_this_decorator_factory
 from chat2edit.execution.exceptions import FeedbackException
-from chat2edit.prompting.stubbing.decorators import exclude_this_decorator
 
 from core.chat2edit.feedbacks import EmptyListParametersFeedback
 
 
-@exclude_this_decorator
+@exclude_this_decorator_factory
 def feedback_empty_list_parameters(parameters: List[str]) -> Callable:
     def decorator(func: Callable) -> Callable:
         def validate_lists_not_empty(*args, **kwargs) -> None:

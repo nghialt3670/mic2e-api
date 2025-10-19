@@ -1,7 +1,7 @@
-from copy import deepcopy
 from typing import List, Literal, Optional, Union
 
 from chat2edit.execution.decorators import (
+    deepcopy_parameter,
     feedback_ignored_return_value,
     feedback_unexpected_error,
 )
@@ -21,7 +21,7 @@ from core.chat2edit.models.object import Object
 from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 
-
+@deepcopy_parameter("image")
 @feedback_unexpected_error
 @feedback_ignored_return_value
 @feedback_empty_list_parameters(["entities"])
@@ -59,4 +59,4 @@ async def apply_filter(
         elif isinstance(entity, Object):
             entity.filters.append(filter_obj)
 
-    return deepcopy(image)
+    return image

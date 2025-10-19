@@ -1,7 +1,7 @@
-from copy import deepcopy
 from typing import List, Literal, Tuple, Union
 
 from chat2edit.execution.decorators import (
+    deepcopy_parameter,
     feedback_ignored_return_value,
     feedback_unexpected_error,
 )
@@ -34,7 +34,7 @@ Location = Union[
     PositionName,
 ]
 
-
+@deepcopy_parameter("image")
 @feedback_unexpected_error
 @feedback_ignored_return_value
 @feedback_empty_list_parameters(["entities"])
@@ -60,7 +60,7 @@ async def locate_entities(
         entity.left = x
         entity.top = y
 
-    return deepcopy(image)
+    return image
 
 
 def calculate_position_coordinates(

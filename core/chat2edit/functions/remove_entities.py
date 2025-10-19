@@ -1,7 +1,7 @@
-from copy import deepcopy
 from typing import List, Union
 
 from chat2edit.execution.decorators import (
+    deepcopy_parameter,
     feedback_ignored_return_value,
     feedback_unexpected_error,
 )
@@ -14,7 +14,7 @@ from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 
-
+@deepcopy_parameter("image")
 @feedback_unexpected_error
 @feedback_ignored_return_value
 @feedback_empty_list_parameters(["entities"])
@@ -23,4 +23,4 @@ async def remove_entities(
 ) -> Image:
     image = await inpaint_uninpainted_objects_in_entities(image, entities)
     image = image.remove_objects(entities)
-    return deepcopy(image)
+    return image

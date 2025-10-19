@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import List, Literal, Tuple, Union
 
-from chat2edit.execution.decorators import feedback_ignored_return_value
+from chat2edit.execution.decorators import deepcopy_parameter, feedback_ignored_return_value
 
 from core.chat2edit.decorators import (
     feedback_empty_list_parameters,
@@ -14,7 +14,7 @@ from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 
-
+@deepcopy_parameter("image")
 @feedback_ignored_return_value
 @feedback_empty_list_parameters(["entities"])
 @feedback_mismatch_list_parameters(["entities", "offsets"])

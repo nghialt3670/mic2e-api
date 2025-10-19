@@ -1,4 +1,5 @@
 from typing import List, Optional, Tuple
+from PIL import Image as PILImage
 
 from chat2edit.execution.decorators import (
     feedback_ignored_return_value,
@@ -48,7 +49,7 @@ def create_sam_input_parameters(
     points: Optional[List[Point]] = None,
 ) -> Tuple[
     Optional[Tuple[int, int, int, int]],
-    Optional[Image.Image],
+    Optional[PILImage.Image],
     Optional[List[Tuple[int, int]]],
     Optional[List[Tuple[int, int]]],
 ]:

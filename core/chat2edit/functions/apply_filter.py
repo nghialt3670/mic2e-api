@@ -53,8 +53,9 @@ async def apply_filter(
 
     # Apply filter to entities that support it (Image and Object)
     for entity in entities:
-        if isinstance(entity, (Image, Object)):
-            # Add the filter to the entity's filters list
+        if isinstance(entity, Image):
+            entity.apply_filter(filter_obj)
+        elif isinstance(entity, Object):
             entity.filters.append(filter_obj)
 
     return image

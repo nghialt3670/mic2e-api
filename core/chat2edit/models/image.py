@@ -3,7 +3,8 @@ from typing import List
 from PIL.Image import Image as PILImage
 
 from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
-
+from core.chat2edit.models.fabric.filters import FabricFilter
+from core.chat2edit.models.object import Object
 
 class Image(FabricGroup):
     def from_image(image: PILImage) -> "Image":
@@ -36,4 +37,13 @@ class Image(FabricGroup):
     def remove_objects(self, objects: List[FabricObject]) -> "Image":
         object_ids = set([obj.id for obj in objects])
         self.objects = [obj for obj in self.objects if obj.id not in object_ids]
+        return self
+
+    def apply_filter(self, filter: FabricFilter) -> "Image":
+        for object in self.objects:
+            if isinstance(object, Image):
+                object.apply_filter(filter)
+            elif isinstance(object, Object):
+                object.filters.append(filter)
+                
         return self

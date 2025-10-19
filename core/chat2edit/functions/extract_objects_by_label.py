@@ -1,5 +1,9 @@
 from typing import List
 
+from chat2edit.execution.decorators import (
+    feedback_ignored_return_value,
+    feedback_unexpected_error,
+)
 from chat2edit.execution.exceptions import FeedbackException
 
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
@@ -12,6 +16,8 @@ from core.inference.predictors import (
 )
 
 
+@feedback_unexpected_error
+@feedback_ignored_return_value
 async def extract_objects_by_label(
     image: Image, label: str, num_expected_objects: int
 ) -> List[Object]:

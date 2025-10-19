@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from pydantic import Field
 
+from core.chat2edit.models.fabric.filters import FabricFilter
 from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
 
 
@@ -19,7 +20,9 @@ class FabricImage(FabricObject):
     cropY: float = Field(default=0, description="Crop Y position")
 
     # Image filters
-    filters: List = Field(default_factory=list, description="Image filters")
+    filters: List[FabricFilter] = Field(
+        default_factory=list, description="Image filters"
+    )
 
     # Override default dimensions
     width: float = Field(default=200, description="Image width")

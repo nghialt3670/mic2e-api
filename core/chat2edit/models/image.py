@@ -5,12 +5,13 @@ from PIL.Image import Image as PILImage
 from core.chat2edit.models.fabric.filters import FabricFilter
 from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
 from core.chat2edit.models.object import Object
+from utils.image import convert_image_to_data_url
 
 
 class Image(FabricGroup):
     def from_image(image: PILImage) -> "Image":
         base_image = FabricImage(
-            src=image.tobytes().decode("utf-8"), width=image.width, height=image.height
+            src=convert_image_to_data_url(image), width=image.width, height=image.height
         )
         return Image(objects=[base_image])
 
@@ -18,7 +19,7 @@ class Image(FabricGroup):
         if not len(self.objects) == 0 or not isinstance(self.objects[0], FabricImage):
             raise ValueError("No base image found")
 
-        self.objects[0].src = image.tobytes().decode("utf-8")
+        self.objects[0].src = convert_image_to_data_url(image)
         self.objects[0].width = image.width
         self.objects[0].height = image.height
 

@@ -6,6 +6,7 @@ from chat2edit.execution.decorators import (
     feedback_unexpected_error,
 )
 
+from utils.image import convert_image_to_data_url
 from core.chat2edit.decorators import feedback_missing_all_optional_parameters
 from core.chat2edit.models.box import Box
 from core.chat2edit.models.image import Image
@@ -90,7 +91,7 @@ def create_object_from_sam_based_segmented_object(
     segmented_object: SamBasedSegmentedObject,
 ) -> Object:
     object = Object()
-    object.src = segmented_object.mask.tobytes().decode("utf-8")
+    object.src = convert_image_to_data_url(segmented_object.mask)
     object.width = segmented_object.mask.width
     object.height = segmented_object.mask.height
     object.left = segmented_object.bbox[0]
@@ -99,7 +100,7 @@ def create_object_from_sam_based_segmented_object(
         segmented_object.positive_points, segmented_object.negative_points
     ] = segmented_object.score
     object.box_to_score[segmented_object.box] = segmented_object.score
-    object.mask_to_score[segmented_object.input_mask.tobytes().decode("utf-8")] = (
+    object.mask_to_score[convert_image_to_data_url(segmented_object.input_mask)] = (
         segmented_object.score
     )
     return object

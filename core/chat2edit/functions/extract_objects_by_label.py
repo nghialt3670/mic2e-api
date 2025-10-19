@@ -14,6 +14,7 @@ from core.inference.predictors import (
     LabelBasedObjectSegmenter,
     LabelBasedSegmentedObject,
 )
+from utils.image import convert_image_to_data_url
 
 
 @feedback_unexpected_error
@@ -46,7 +47,7 @@ def create_object_from_label_based_segmented_object(
     segmented_object: LabelBasedSegmentedObject,
 ) -> Object:
     object = Object()
-    object.src = segmented_object.mask.tobytes().decode("utf-8")
+    object.src = convert_image_to_data_url(segmented_object.mask)
     object.width = segmented_object.mask.width
     object.height = segmented_object.mask.height
     object.left = segmented_object.bbox[0]

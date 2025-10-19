@@ -1,3 +1,4 @@
+import base64
 from typing import Tuple
 
 import numpy as np
@@ -34,3 +35,8 @@ def expand_mask_image(mask_image: Image.Image, iterations: int = 10) -> Image.Im
     expanded_mask = binary_dilation(binary_mask, iterations=iterations).astype(np.uint8)
     expanded_mask = expanded_mask * 255
     return Image.fromarray(expanded_mask)
+
+
+def convert_image_to_data_url(image: Image.Image) -> str:
+    bytes = image.convert("RGBA").tobytes()
+    return f"data:image/png;base64,{base64.b64encode(bytes).decode('utf-8')}"

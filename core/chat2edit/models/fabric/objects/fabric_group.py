@@ -2,7 +2,7 @@ from typing import Any, Dict, List
 
 from pydantic import BaseModel, Field
 
-from core.chat2edit.models.fabric.fabric_object import FabricObject
+from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
 
 
 class LayoutManager(BaseModel):

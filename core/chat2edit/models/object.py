@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple
 from PIL import Image
 from pydantic import Field
 
-from core.chat2edit.models.fabric import FabricImage
+from core.chat2edit.models.fabric.objects import FabricImage
 
 
 class Object(FabricImage):

@@ -1,4 +1,4 @@
-from core.chat2edit.models.fabric import FabricText
+from core.chat2edit.models.fabric.objects import FabricText
 
 
 class Text(FabricText):

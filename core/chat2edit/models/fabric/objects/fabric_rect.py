@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from core.chat2edit.models.fabric.fabric_object import FabricObject
+from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
 
 
 class FabricRect(FabricObject):

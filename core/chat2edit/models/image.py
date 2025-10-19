@@ -2,7 +2,7 @@ from typing import List
 
 from PIL.Image import Image as PILImage
 
-from core.chat2edit.models.fabric import FabricGroup, FabricImage, FabricObject
+from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
 
 
 class Image(FabricGroup):

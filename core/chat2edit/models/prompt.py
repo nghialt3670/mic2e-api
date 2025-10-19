@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from core.chat2edit.models.fabric import FabricObject
+from core.chat2edit.models.fabric.objects import FabricObject
 
 
 class Prompt:

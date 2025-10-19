@@ -1,4 +1,5 @@
-from typing import List, Literal, Union
+from copy import deepcopy
+from typing import List, Literal, Tuple, Union
 
 from chat2edit.execution.decorators import feedback_ignored_return_value
 
@@ -20,7 +21,7 @@ from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 async def shift_entities(
     image: Image,
     entities: List[Union[Image, Object, Text, Box, Point]],
-    offsets: List[tuple],
+    offsets: List[Tuple[int, int]],
     unit: Literal["pixel", "percentage"],
 ) -> Image:
     image_width = image.get_image().width
@@ -38,4 +39,4 @@ async def shift_entities(
             entity.left = entity.left + dx_pixels
             entity.top = entity.top + dy_pixels
 
-    return image
+    return deepcopy(image)

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import List, Union
 
 from chat2edit.execution.decorators import (
@@ -22,4 +23,4 @@ async def remove_entities(
 ) -> Image:
     image = await inpaint_uninpainted_objects_in_entities(image, entities)
     image = image.remove_objects(entities)
-    return image
+    return deepcopy(image)

@@ -37,7 +37,9 @@ async def extract_object_by_sam(
             negative_points=negative_points,
         )
 
-    return create_object_from_sam_based_segmented_object(segmented_objects[0])
+    object = create_object_from_sam_based_segmented_object(segmented_objects[0])
+    image.add_object(object)
+    return object
 
 
 def create_sam_input_parameters(

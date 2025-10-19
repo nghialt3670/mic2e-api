@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import List, Literal, Optional, Union
 
 from chat2edit.execution.decorators import (
@@ -58,4 +59,4 @@ async def apply_filter(
         elif isinstance(entity, Object):
             entity.filters.append(filter_obj)
 
-    return image
+    return deepcopy(image)

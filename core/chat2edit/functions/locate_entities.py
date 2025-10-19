@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import List, Literal, Tuple, Union
 
 from chat2edit.execution.decorators import (
@@ -59,7 +60,7 @@ async def locate_entities(
         entity.left = x
         entity.top = y
 
-    return image
+    return deepcopy(image)
 
 
 def calculate_position_coordinates(

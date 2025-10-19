@@ -2,9 +2,10 @@ from typing import List
 
 from PIL.Image import Image as PILImage
 
-from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
 from core.chat2edit.models.fabric.filters import FabricFilter
+from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
 from core.chat2edit.models.object import Object
+
 
 class Image(FabricGroup):
     def from_image(image: PILImage) -> "Image":
@@ -30,6 +31,14 @@ class Image(FabricGroup):
 
         return PILImage.frombytes(self.objects[0].src)
 
+    def add_object(self, object: FabricObject) -> "Image":
+        self.objects.append(object)
+        return self
+
+    def add_objects(self, objects: List[FabricObject]) -> "Image":
+        self.objects.extend(objects)
+        return self
+
     def remove_object(self, object: FabricObject) -> "Image":
         self.objects = [obj for obj in self.objects if obj.id != object.id]
         return self
@@ -45,5 +54,5 @@ class Image(FabricGroup):
                 object.apply_filter(filter)
             elif isinstance(object, Object):
                 object.filters.append(filter)
-                
+
         return self

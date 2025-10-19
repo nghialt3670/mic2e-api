@@ -35,7 +35,11 @@ async def extract_objects_by_label(
             )
         )
 
-    return list(map(create_object_from_label_based_segmented_object, segmented_objects))
+    objects = list(
+        map(create_object_from_label_based_segmented_object, segmented_objects)
+    )
+    image.add_objects(objects)
+    return objects
 
 
 def create_object_from_label_based_segmented_object(

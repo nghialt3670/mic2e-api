@@ -14,6 +14,7 @@ from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 
+
 @deepcopy_parameter("image")
 @feedback_unexpected_error
 @feedback_ignored_return_value

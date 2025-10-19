@@ -21,6 +21,7 @@ from core.chat2edit.models.object import Object
 from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 
+
 @deepcopy_parameter("image")
 @feedback_unexpected_error
 @feedback_ignored_return_value

@@ -34,6 +34,7 @@ Location = Union[
     PositionName,
 ]
 
+
 @deepcopy_parameter("image")
 @feedback_unexpected_error
 @feedback_ignored_return_value

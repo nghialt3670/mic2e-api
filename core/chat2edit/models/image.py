@@ -24,7 +24,7 @@ class Image(FabricGroup):
         self.objects[0].height = image.height
 
     def get_image(self) -> PILImage:
-        if not len(self.objects) == 0 or not isinstance(self.objects[0], FabricImage):
+        if len(self.objects) == 0 or not isinstance(self.objects[0], FabricImage):
             raise ValueError("No base image found")
 
         if not self.objects[0].src:

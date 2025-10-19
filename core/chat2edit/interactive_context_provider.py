@@ -1,6 +1,7 @@
 from abc import abstractmethod
 
 from chat2edit.base import ContextProvider
+
 from core.predictors import LabelBasedObjectSegmenter, MaskBasedImageInpainter
 
 

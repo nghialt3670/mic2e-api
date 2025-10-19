@@ -1,7 +1,8 @@
 from abc import abstractmethod
 
-from core.inference.predictors.predictor import Predictor
 from PIL import Image
+
+from core.inference.predictors.predictor import Predictor
 
 
 class MaskBasedImageInpainter(Predictor):

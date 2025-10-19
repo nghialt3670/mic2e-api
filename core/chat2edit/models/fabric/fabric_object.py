@@ -6,6 +6,11 @@ from pydantic import BaseModel, Field
 class FabricObject(BaseModel):
     """Base class for all Fabric.js objects."""
 
+    # Custom fields
+    id: str = Field(default="", description="Object id")
+
+    # Fabric.js fields
+    # Type and version
     type: str = Field(default="FabricObject", description="Object type")
     version: str = Field(default="6.7.1", description="Fabric.js version")
 

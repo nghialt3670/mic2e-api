@@ -1,7 +1,8 @@
 from typing import List, Optional
 
-from core.chat2edit.models.fabric_object import FabricObject
 from pydantic import Field
+
+from core.chat2edit.models.fabric.fabric_object import FabricObject
 
 
 class FabricImage(FabricObject):

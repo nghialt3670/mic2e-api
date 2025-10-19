@@ -1,4 +1,6 @@
 import base64
+import io
+import re
 from typing import Tuple
 
 import numpy as np
@@ -38,5 +40,17 @@ def expand_mask_image(mask_image: Image.Image, iterations: int = 10) -> Image.Im
 
 
 def convert_image_to_data_url(image: Image.Image) -> str:
-    bytes = image.convert("RGBA").tobytes()
-    return f"data:image/png;base64,{base64.b64encode(bytes).decode('utf-8')}"
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    buffer.seek(0)
+    png_bytes = buffer.read()
+    return f"data:image/png;base64,{base64.b64encode(png_bytes).decode('utf-8')}"
+
+
+def convert_data_url_to_image(data_url: str) -> Image.Image:
+    match = re.search(r"data:image/(.*?);base64,(.*)", data_url)
+    if not match:
+        raise ValueError("Invalid data URL")
+
+    image_data = base64.b64decode(match.group(2))
+    return Image.open(io.BytesIO(image_data))

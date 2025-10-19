@@ -17,8 +17,8 @@ from core.inference.predictors import (
 from utils.image import convert_image_to_data_url
 
 
-@feedback_unexpected_error
 @feedback_ignored_return_value
+@feedback_unexpected_error
 async def extract_objects_by_label(
     image: Image, label: str, num_expected_objects: int
 ) -> List[Object]:

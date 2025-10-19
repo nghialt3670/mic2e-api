@@ -16,8 +16,8 @@ from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import SamBasedObjectSegmenter, SamBasedSegmentedObject
 
 
-@feedback_unexpected_error
 @feedback_ignored_return_value
+@feedback_unexpected_error
 @feedback_missing_all_optional_parameters(["box", "mask", "points"])
 async def extract_object_by_sam(
     image: Image,

@@ -35,9 +35,9 @@ Location = Union[
 ]
 
 
+@feedback_ignored_return_value
 @deepcopy_parameter("image")
 @feedback_unexpected_error
-@feedback_ignored_return_value
 @feedback_empty_list_parameters(["entities"])
 @feedback_mismatch_list_parameters(["entities", "locations"])
 async def locate_entities(

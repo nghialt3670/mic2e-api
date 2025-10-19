@@ -22,9 +22,9 @@ from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 
 
+@feedback_ignored_return_value
 @deepcopy_parameter("image")
 @feedback_unexpected_error
-@feedback_ignored_return_value
 @feedback_empty_list_parameters(["entities"])
 async def apply_filter(
     image: Image,

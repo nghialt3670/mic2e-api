@@ -28,11 +28,11 @@ from core.chat2edit.models.text import Text
 @feedback_empty_list_parameters(["entities"])
 async def apply_filter(
     image: Image,
-    entities: List[Union[Image, Object, Text, Box, Point]],
     filter_name: Literal[
         "blackWhite", "blur", "brightness", "contrast", "invert", "saturation"
     ],
     filter_value: Optional[float] = None,
+    entities: Optional[List[Union[Image, Object]]] = None,
 ) -> Image:
     filter_obj = None
 
@@ -53,11 +53,13 @@ async def apply_filter(
         saturation_value = filter_value if filter_value is not None else 0
         filter_obj = SaturationFilter(saturation=saturation_value)
 
-    # Apply filter to entities that support it (Image and Object)
-    for entity in entities:
-        if isinstance(entity, Image):
-            entity.apply_filter(filter_obj)
-        elif isinstance(entity, Object):
-            entity.filters.append(filter_obj)
+    if entities:
+        for entity in entities:
+            if isinstance(entity, Image):
+                entity.apply_filter(filter_obj)
+            elif isinstance(entity, Object):
+                entity.filters.append(filter_obj)
+    else:
+        image.apply_filter(filter_obj)
 
     return image

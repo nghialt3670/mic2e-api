@@ -2,10 +2,10 @@ from typing import List
 
 from chat2edit.execution.decorators import (
     feedback_ignored_return_value,
+    feedback_invalid_parameter_type,
     feedback_unexpected_error,
 )
 from chat2edit.execution.exceptions import FeedbackException
-
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
 from core.chat2edit.models.image import Image
 from core.chat2edit.models.object import Object
@@ -19,6 +19,7 @@ from utils.image import convert_image_to_data_url
 
 @feedback_ignored_return_value
 @feedback_unexpected_error
+@feedback_invalid_parameter_type
 async def extract_objects_by_label(
     image: Image, label: str, num_expected_objects: int
 ) -> List[Object]:

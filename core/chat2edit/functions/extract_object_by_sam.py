@@ -2,10 +2,9 @@ from typing import List, Optional, Tuple
 
 from chat2edit.execution.decorators import (
     feedback_ignored_return_value,
+    feedback_invalid_parameter_type,
     feedback_unexpected_error,
 )
-from PIL import Image as PILImage
-
 from core.chat2edit.decorators import feedback_missing_all_optional_parameters
 from core.chat2edit.models.box import Box
 from core.chat2edit.models.image import Image
@@ -13,11 +12,13 @@ from core.chat2edit.models.object import Object
 from core.chat2edit.models.point import Point
 from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import SamBasedObjectSegmenter, SamBasedSegmentedObject
+from PIL import Image as PILImage
 from utils.image import convert_image_to_data_url
 
 
 @feedback_ignored_return_value
 @feedback_unexpected_error
+@feedback_invalid_parameter_type
 @feedback_missing_all_optional_parameters(["box", "mask", "points"])
 async def extract_object_by_sam(
     image: Image,

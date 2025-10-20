@@ -1,8 +1,7 @@
 from typing import List
 
-from pydantic import Field
-
 from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
+from pydantic import Field
 
 
 class FabricText(FabricObject):

@@ -1,8 +1,5 @@
 from typing import List
 
-from PIL import Image
-from typing_extensions import override
-
 from core.inference.predictors.box_based_object_segmenter import BoxBasedObjectSegmenter
 from core.inference.predictors.label_based_object_detector import (
     LabelBasedObjectDetector,
@@ -11,6 +8,8 @@ from core.inference.predictors.label_based_object_segmenter import (
     LabelBasedObjectSegmenter,
     LabelBasedSegmentedObject,
 )
+from PIL import Image
+from typing_extensions import override
 
 
 class TwoStageObjectSegmenter(LabelBasedObjectSegmenter):

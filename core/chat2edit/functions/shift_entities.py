@@ -5,9 +5,9 @@ from chat2edit.execution.decorators import (
     deepcopy_parameter,
     feedback_ignored_return_value,
 )
-
 from core.chat2edit.decorators import (
     feedback_empty_list_parameters,
+    feedback_invalid_parameter_type,
     feedback_mismatch_list_parameters,
 )
 from core.chat2edit.models.box import Box
@@ -20,6 +20,7 @@ from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 
 @deepcopy_parameter("image")
 @feedback_ignored_return_value
+@feedback_invalid_parameter_type
 @feedback_empty_list_parameters(["entities"])
 @feedback_mismatch_list_parameters(["entities", "offsets"])
 async def shift_entities(

@@ -1,11 +1,11 @@
 from typing import List, Union
 
-from pydantic import BaseModel, Field
-
-from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
 from core.chat2edit.models.fabric.objects.fabric_image import FabricImage
+from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
 from core.chat2edit.models.fabric.objects.fabric_rect import FabricRect
 from core.chat2edit.models.fabric.objects.fabric_text import FabricText
+from pydantic import BaseModel, Field
+
 
 class LayoutManager(BaseModel):
     """Layout manager for group objects."""

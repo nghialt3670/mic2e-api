@@ -4,7 +4,6 @@ from typing import Callable, List
 
 from chat2edit.execution.decorators import exclude_this_decorator_factory
 from chat2edit.execution.exceptions import FeedbackException
-
 from core.chat2edit.feedbacks import MissingAllOptionalParametersFeedback
 
 

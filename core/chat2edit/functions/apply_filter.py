@@ -3,9 +3,9 @@ from typing import List, Literal, Optional, Union
 from chat2edit.execution.decorators import (
     deepcopy_parameter,
     feedback_ignored_return_value,
+    feedback_invalid_parameter_type,
     feedback_unexpected_error,
 )
-
 from core.chat2edit.decorators import feedback_empty_list_parameters
 from core.chat2edit.models.fabric.filters import (
     BlackWhiteFilter,
@@ -23,6 +23,7 @@ from core.chat2edit.utils import get_own_objects
 @feedback_ignored_return_value
 @deepcopy_parameter("image")
 @feedback_unexpected_error
+@feedback_invalid_parameter_type
 @feedback_empty_list_parameters(["entities"])
 async def apply_filter(
     image: Image,

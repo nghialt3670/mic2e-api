@@ -1,7 +1,5 @@
 from typing import List, Union
 
-from PIL.Image import Image as PILImage
-
 from core.chat2edit.models.box import Box
 from core.chat2edit.models.image import Image
 from core.chat2edit.models.object import Object
@@ -9,6 +7,7 @@ from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import MaskBasedImageInpainter
+from PIL.Image import Image as PILImage
 
 
 async def inpaint_objects(image: Image, objects: List[Object]) -> Image:

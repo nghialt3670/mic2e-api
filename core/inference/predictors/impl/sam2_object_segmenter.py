@@ -4,14 +4,6 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
-from hydra import compose, initialize_config_dir
-from hydra.core.global_hydra import GlobalHydra
-from PIL import Image
-from sam2.build_sam import build_sam2
-from sam2.modeling.sam2_base import SAM2Base
-from sam2.sam2_image_predictor import SAM2ImagePredictor
-from typing_extensions import override
-
 from core.inference.predictors.box_based_object_segmenter import (
     BoxBasedObjectSegmenter,
     BoxBasedSegmentedObject,
@@ -28,6 +20,13 @@ from core.inference.predictors.sam_based_object_segmenter import (
     SamBasedObjectSegmenter,
     SamBasedSegmentedObject,
 )
+from hydra import compose, initialize_config_dir
+from hydra.core.global_hydra import GlobalHydra
+from PIL import Image
+from sam2.build_sam import build_sam2
+from sam2.modeling.sam2_base import SAM2Base
+from sam2.sam2_image_predictor import SAM2ImagePredictor
+from typing_extensions import override
 from utils.image import convert_ndarray_to_mask_image, get_bbox_from_mask_image
 
 

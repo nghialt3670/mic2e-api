@@ -7,7 +7,6 @@ from chat2edit.execution.decorators import (
 )
 
 from core.chat2edit.decorators import feedback_empty_list_parameters
-from core.chat2edit.models.box import Box
 from core.chat2edit.models.fabric.filters import (
     BlackWhiteFilter,
     BlurFilter,
@@ -18,8 +17,7 @@ from core.chat2edit.models.fabric.filters import (
 )
 from core.chat2edit.models.image import Image
 from core.chat2edit.models.object import Object
-from core.chat2edit.models.point import Point
-from core.chat2edit.models.text import Text
+from core.chat2edit.utils import get_own_objects
 
 
 @feedback_ignored_return_value
@@ -54,12 +52,13 @@ async def apply_filter(
         filter_obj = SaturationFilter(saturation=saturation_value)
 
     if entities:
-        for entity in entities:
-            if isinstance(entity, Image):
-                entity.apply_filter(filter_obj)
-            elif isinstance(entity, Object):
-                entity.filters.append(filter_obj)
+        own_objects = get_own_objects(image.objects)
+        for obj in own_objects:
+            if isinstance(obj, Image):
+                obj.apply_filter(filter_obj)
+            elif isinstance(obj, Object):
+                obj.filters.append(filter_obj)
     else:
-        image.apply_filter(filter_obj)
+        image = image.apply_filter(filter_obj)
 
     return image

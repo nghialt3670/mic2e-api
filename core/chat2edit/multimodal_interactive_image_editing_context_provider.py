@@ -3,12 +3,14 @@ from typing import Any, Dict, List
 
 from chat2edit.base import ContextProvider
 from chat2edit.models import ChatCycle
+
 from core.chat2edit.functions import (
     apply_filter,
     extract_object_by_sam,
     extract_objects_by_label,
     locate_entities,
     remove_entities,
+    respond_to_user,
     shift_entities,
 )
 
@@ -27,6 +29,7 @@ class MultimodalInteractiveImageEditingContextProvider(ContextProvider):
             "locate_entities": locate_entities,
             "remove_entities": remove_entities,
             "shift_entities": shift_entities,
+            "respond_to_user": respond_to_user,
         }
 
     @abstractmethod

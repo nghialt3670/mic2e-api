@@ -2,8 +2,9 @@ from abc import abstractmethod
 from collections import namedtuple
 from typing import List, Tuple
 
-from core.inference.predictors.predictor import Predictor
 from PIL import Image
+
+from core.inference.predictors.predictor import Predictor
 
 BoxBasedSegmentedObject = namedtuple(
     "BoxBasedSegmentedObject", ["mask", "bbox", "score", "box"]

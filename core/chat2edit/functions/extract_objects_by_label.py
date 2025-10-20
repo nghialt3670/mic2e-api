@@ -6,6 +6,7 @@ from chat2edit.execution.decorators import (
     feedback_unexpected_error,
 )
 from chat2edit.execution.exceptions import FeedbackException
+
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
 from core.chat2edit.models.image import Image
 from core.chat2edit.models.object import Object

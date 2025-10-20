@@ -1,7 +1,8 @@
 from typing import Literal, Optional
 
-from core.chat2edit.models.fabric.objects import FabricImage
 from pydantic import Field
+
+from core.chat2edit.models.fabric.objects import FabricImage
 
 
 class Point(FabricImage):

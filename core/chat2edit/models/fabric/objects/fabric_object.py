@@ -1,13 +1,14 @@
 from typing import Optional
 
 from pydantic import BaseModel, Field
+from utils.factories import create_uuid4
 
 
 class FabricObject(BaseModel):
     """Base class for all Fabric.js objects."""
 
     # Custom fields
-    id: str = Field(default="", description="Object id")
+    id: str = Field(default_factory=create_uuid4, description="Object id")
 
     # Fabric.js fields
     # Type and version

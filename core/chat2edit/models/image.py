@@ -32,6 +32,9 @@ class Image(FabricGroup):
 
         return convert_data_url_to_image(self.objects[0].src)
 
+    def get_objects(self) -> List[FabricObject]:
+        return self.objects[1:] if len(self.objects) > 1 else []
+
     def add_object(self, object: FabricObject) -> "Image":
         self.objects.append(object)
         return self
@@ -51,9 +54,9 @@ class Image(FabricGroup):
 
     def apply_filter(self, filter: FabricFilter) -> "Image":
         for object in self.objects:
-            if isinstance(object, Image):
-                object.apply_filter(filter)
-            elif isinstance(object, Object):
+            if isinstance(object, FabricImage):
                 object.filters.append(filter)
+            elif isinstance(object, Image):
+                object.apply_filter(filter)
 
         return self

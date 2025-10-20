@@ -52,7 +52,7 @@ async def apply_filter(
         filter_obj = SaturationFilter(saturation=saturation_value)
 
     if entities:
-        own_objects = get_own_objects(image.objects)
+        own_objects = get_own_objects(image.get_objects())
         for obj in own_objects:
             if isinstance(obj, Image):
                 obj.apply_filter(filter_obj)

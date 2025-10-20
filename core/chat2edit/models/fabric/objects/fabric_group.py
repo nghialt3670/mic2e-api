@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Union
 
 from pydantic import BaseModel, Field
 
 from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
-
+from core.chat2edit.models.fabric.objects.fabric_image import FabricImage
+from core.chat2edit.models.fabric.objects.fabric_rect import FabricRect
+from core.chat2edit.models.fabric.objects.fabric_text import FabricText
 
 class LayoutManager(BaseModel):
     """Layout manager for group objects."""
@@ -29,7 +31,7 @@ class FabricGroup(FabricObject):
     )
 
     # Child objects
-    objects: List[FabricObject] = Field(
+    objects: List[Union[FabricImage, FabricRect, FabricText]] = Field(
         default_factory=list, description="Child objects in the group"
     )
 

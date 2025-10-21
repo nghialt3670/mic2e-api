@@ -44,13 +44,6 @@ def get_predictor_manager() -> PredictorManager:
     return GlobalPredictorManager.get_instance()
 
 
-# Convenience function for async context manager
-async def get_predictor(predictor_type):
-    """Get a predictor from the global manager."""
-    manager = get_predictor_manager()
-    return manager.get_predictor(predictor_type)
-
-
 # Convenience function for shutdown
 async def shutdown_predictor_manager():
     """Shutdown the global predictor manager."""

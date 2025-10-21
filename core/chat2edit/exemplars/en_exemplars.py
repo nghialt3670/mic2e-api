@@ -3,7 +3,7 @@ from chat2edit.models import ChatCycle, Message, PromptExecuteLoop
 
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
 
-VI_EXEMPLARS = [
+EN_EXEMPLARS = [
     ChatCycle(
         request=Message(
             text="Remove the dog from the image",

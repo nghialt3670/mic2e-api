@@ -13,6 +13,8 @@ from core.chat2edit.functions import (
     respond_to_user,
     shift_entities,
 )
+from core.chat2edit.exemplars.en_exemplars import EN_EXEMPLARS
+from core.chat2edit.exemplars.vi_exemplars import VI_EXEMPLARS
 
 
 class MultimodalInteractiveImageEditingContextProvider(ContextProvider):
@@ -20,7 +22,6 @@ class MultimodalInteractiveImageEditingContextProvider(ContextProvider):
         super().__init__()
         self._language = language
 
-    @abstractmethod
     def get_context(self) -> Dict[str, Any]:
         return {
             "apply_filter": apply_filter,
@@ -32,6 +33,10 @@ class MultimodalInteractiveImageEditingContextProvider(ContextProvider):
             "respond_to_user": respond_to_user,
         }
 
-    @abstractmethod
     def get_exemplars(self) -> List[ChatCycle]:
-        pass
+        if self._language == "en":
+            return EN_EXEMPLARS
+        elif self._language == "vi":
+            return VI_EXEMPLARS
+        else:
+            raise ValueError(f"Unsupported language: {self._language}")

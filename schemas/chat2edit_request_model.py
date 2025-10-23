@@ -1,13 +1,10 @@
 from typing import List, Literal
 
 from chat2edit import Chat2EditConfig
-from chat2edit.models import ChatCycle
 from pydantic import BaseModel, Field
 
-
-class UserMessage(BaseModel):
-    text: str
-    attachmentUrls: List[str]
+from schemas.chat_cycle_model import ChatCycleModel
+from schemas.message_model import MessageModel
 
 
 class LlmConfig(BaseModel):
@@ -31,9 +28,9 @@ DEFAULT_CHAT2EDIT_CONFIG = Chat2EditConfig(
 )
 
 
-class Chat2EditRequest(BaseModel):
+class Chat2EditRequestModel(BaseModel):
     chatId: str = Field(description="The id of the chat")
-    message: UserMessage = Field(description="The user message")
+    message: MessageModel = Field(description="The user message")
     language: Literal["en", "vi"] = Field(
         default="en", description="The language of the user message"
     )
@@ -44,6 +41,6 @@ class Chat2EditRequest(BaseModel):
         default=DEFAULT_CHAT2EDIT_CONFIG,
         description="The configuration of the chat2edit",
     )
-    history: List[ChatCycle] = Field(
+    history: List[ChatCycleModel] = Field(
         default=[], description="The history of the chat2edit"
     )

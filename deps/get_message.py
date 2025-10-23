@@ -5,11 +5,11 @@ from chat2edit.models import Message
 from fastapi import Body, Depends
 
 from deps.get_attachments import get_attachments
-from schemas.chat2edit_request import Chat2EditRequest
+from schemas import Chat2EditRequestModel
 
 
 def get_message(
-    request: Chat2EditRequest = Body(...),
+    request: Chat2EditRequestModel = Body(...),
     attachments: List[Attachment] = Depends(get_attachments),
 ) -> Message:
     return Message(text=request.message.text, attachments=attachments)

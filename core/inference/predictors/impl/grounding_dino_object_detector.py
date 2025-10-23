@@ -8,7 +8,9 @@ from PIL import Image
 from typing_extensions import override
 
 from core.inference.predictors.label_based_object_detector import (
-    LabelBasedDetectedObject, LabelBasedObjectDetector)
+    LabelBasedDetectedObject,
+    LabelBasedObjectDetector,
+)
 from utils.image import convert_normalized_center_to_absolute_corners
 
 

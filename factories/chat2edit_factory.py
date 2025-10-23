@@ -1,9 +1,8 @@
 from typing import List
 
 from chat2edit import Chat2Edit, Chat2EditCallbacks, Chat2EditConfig
-from chat2edit.base import ContextProvider, PromptStrategy
+from chat2edit.base import ContextProvider, Llm, PromptStrategy
 from chat2edit.models import ChatCycle
-from chat2edit.prompting.llms import Llm
 
 CHAT2EDIT_CALLBACKS = Chat2EditCallbacks(
     on_request=lambda message: print(f"Request: {message}"),

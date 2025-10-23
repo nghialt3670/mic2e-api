@@ -6,8 +6,7 @@ from PIL import Image
 from simple_lama_inpainting.utils.util import prepare_img_and_mask
 from typing_extensions import override
 
-from core.inference.predictors.mask_based_image_inpainter import \
-    MaskBasedImageInpainter
+from core.inference.predictors.mask_based_image_inpainter import MaskBasedImageInpainter
 
 
 class LamaImageInpainter(MaskBasedImageInpainter):

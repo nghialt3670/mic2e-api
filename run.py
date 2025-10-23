@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
-"""
-Startup script for MIC2E API
-"""
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import os
 import sys

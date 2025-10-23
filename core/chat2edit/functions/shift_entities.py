@@ -1,12 +1,16 @@
 from copy import deepcopy
 from typing import List, Literal, Tuple, Union
 
-from chat2edit.execution.decorators import (deepcopy_parameter,
-                                            feedback_ignored_return_value)
+from chat2edit.execution.decorators import (
+    deepcopy_parameter,
+    feedback_ignored_return_value,
+    feedback_invalid_parameter_type,
+)
 
-from core.chat2edit.decorators import (feedback_empty_list_parameters,
-                                       feedback_invalid_parameter_type,
-                                       feedback_mismatch_list_parameters)
+from core.chat2edit.decorators import (
+    feedback_empty_list_parameters,
+    feedback_mismatch_list_parameters,
+)
 from core.chat2edit.models import Box, Image, Object, Point, Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 

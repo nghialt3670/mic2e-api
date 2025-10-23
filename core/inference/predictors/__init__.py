@@ -1,17 +1,28 @@
 from core.inference.predictors.box_based_object_segmenter import (
-    BoxBasedObjectSegmenter, BoxBasedSegmentedObject)
+    BoxBasedObjectSegmenter,
+    BoxBasedSegmentedObject,
+)
 from core.inference.predictors.label_based_object_detector import (
-    LabelBasedDetectedObject, LabelBasedObjectDetector)
+    LabelBasedDetectedObject,
+    LabelBasedObjectDetector,
+)
 from core.inference.predictors.label_based_object_segmenter import (
-    LabelBasedObjectSegmenter, LabelBasedSegmentedObject)
-from core.inference.predictors.mask_based_image_inpainter import \
-    MaskBasedImageInpainter
+    LabelBasedObjectSegmenter,
+    LabelBasedSegmentedObject,
+)
+from core.inference.predictors.mask_based_image_inpainter import MaskBasedImageInpainter
 from core.inference.predictors.mask_based_object_segmenter import (
-    MaskBasedObjectSegmenter, MaskBasedSegmentedObject)
+    MaskBasedObjectSegmenter,
+    MaskBasedSegmentedObject,
+)
 from core.inference.predictors.point_based_object_segmenter import (
-    PointBasedObjectSegmenter, PointBasedSegmentedObject)
+    PointBasedObjectSegmenter,
+    PointBasedSegmentedObject,
+)
 from core.inference.predictors.sam_based_object_segmenter import (
-    SamBasedObjectSegmenter, SamBasedSegmentedObject)
+    SamBasedObjectSegmenter,
+    SamBasedSegmentedObject,
+)
 
 __all__ = [
     "BoxBasedObjectSegmenter",

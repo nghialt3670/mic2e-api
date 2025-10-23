@@ -6,8 +6,13 @@ from chat2edit.context import Attachment
 from chat2edit.models import Message
 from fastapi import APIRouter, Depends
 
-from deps import (get_attachment_file_service, get_attachment_mapping_service,
-                  get_chat2edit, get_context_file_service, get_message)
+from deps import (
+    get_attachment_file_service,
+    get_attachment_mapping_service,
+    get_chat2edit,
+    get_context_file_service,
+    get_message,
+)
 from schemas import ChatCycleModel, MessageModel, ResponseModel
 from services import AttachmentMappingService, FileService
 from utils.decorators import handle_exceptions

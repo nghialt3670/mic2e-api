@@ -8,13 +8,13 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 supabase_client: SyncClient = create_client(
-    url=SUPABASE_URL,
-    key=SUPABASE_ANON_KEY,
+    supabase_url=SUPABASE_URL,
+    supabase_key=SUPABASE_ANON_KEY,
 )
 
 
 async def create_supabase_async_client() -> AsyncClient:
     return await create_async_client(
-        url=SUPABASE_URL,
-        key=SUPABASE_ANON_KEY,
+        supabase_url=SUPABASE_URL,
+        supabase_key=SUPABASE_ANON_KEY,
     )

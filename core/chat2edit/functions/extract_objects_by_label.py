@@ -1,15 +1,19 @@
 from typing import List
 
-from chat2edit.execution.decorators import (feedback_ignored_return_value,
-                                            feedback_invalid_parameter_type,
-                                            feedback_unexpected_error)
+from chat2edit.execution.decorators import (
+    feedback_ignored_return_value,
+    feedback_invalid_parameter_type,
+    feedback_unexpected_error,
+)
 from chat2edit.execution.exceptions import FeedbackException
 
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
 from core.chat2edit.models import Image, Object
 from core.inference.manager.global_manager import get_predictor_manager
-from core.inference.predictors import (LabelBasedObjectSegmenter,
-                                       LabelBasedSegmentedObject)
+from core.inference.predictors import (
+    LabelBasedObjectSegmenter,
+    LabelBasedSegmentedObject,
+)
 from utils.image import convert_image_to_data_url
 
 

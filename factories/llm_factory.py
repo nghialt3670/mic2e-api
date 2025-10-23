@@ -1,7 +1,8 @@
 import os
 from typing import Literal
 
-from chat2edit.prompting.llms import GoogleLlm, Llm, OpenAILlm
+from chat2edit.prompting.llms import GoogleLlm, OpenAILlm
+from chat2edit.base import Llm
 
 
 def create_llm(provider: Literal["openai", "google"]) -> Llm:

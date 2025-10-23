@@ -8,12 +8,10 @@ from PIL import Image
 from torchvision import transforms
 from typing_extensions import override
 
-from core.inference.predictors.impl.img_enhancing_model.aesthetic_regressor import (
-    AestheticRegressor,
-)
-from core.inference.predictors.parameter_enhancement_predictor import (
-    ParameterEnhancementPredictor,
-)
+from core.inference.predictors.impl.img_enhancing_model.aesthetic_regressor import \
+    AestheticRegressor
+from core.inference.predictors.parameter_enhancement_predictor import \
+    ParameterEnhancementPredictor
 
 
 class ModelEnhancingPredictor(ParameterEnhancementPredictor):

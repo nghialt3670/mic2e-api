@@ -9,10 +9,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from core.inference.manager.global_manager import (
-    get_predictor_manager,
-    shutdown_predictor_manager,
-)
+from core.inference.manager.global_manager import (get_predictor_manager,
+                                                   shutdown_predictor_manager)
 from routers.chat_router import router as chat_router
 
 

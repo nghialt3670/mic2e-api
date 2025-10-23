@@ -13,21 +13,13 @@ from sam2.sam2_image_predictor import SAM2ImagePredictor
 from typing_extensions import override
 
 from core.inference.predictors.box_based_object_segmenter import (
-    BoxBasedObjectSegmenter,
-    BoxBasedSegmentedObject,
-)
+    BoxBasedObjectSegmenter, BoxBasedSegmentedObject)
 from core.inference.predictors.mask_based_object_segmenter import (
-    MaskBasedObjectSegmenter,
-    MaskBasedSegmentedObject,
-)
+    MaskBasedObjectSegmenter, MaskBasedSegmentedObject)
 from core.inference.predictors.point_based_object_segmenter import (
-    PointBasedObjectSegmenter,
-    PointBasedSegmentedObject,
-)
+    PointBasedObjectSegmenter, PointBasedSegmentedObject)
 from core.inference.predictors.sam_based_object_segmenter import (
-    SamBasedObjectSegmenter,
-    SamBasedSegmentedObject,
-)
+    SamBasedObjectSegmenter, SamBasedSegmentedObject)
 from utils.image import convert_ndarray_to_mask_image, get_bbox_from_mask_image
 
 

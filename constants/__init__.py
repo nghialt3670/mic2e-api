@@ -1,3 +1,4 @@
-from .supabase_constants import SUPABASE_ATTACHMENTS_BUCKET, SUPABASE_CONTEXT_BUCKET
+from .supabase_constants import (SUPABASE_ATTACHMENTS_BUCKET,
+                                 SUPABASE_CONTEXT_BUCKET)
 
 __all__ = ["SUPABASE_ATTACHMENTS_BUCKET", "SUPABASE_CONTEXT_BUCKET"]

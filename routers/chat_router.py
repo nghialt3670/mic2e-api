@@ -6,18 +6,12 @@ from chat2edit.context import Attachment
 from chat2edit.models import Message
 from fastapi import APIRouter, Depends
 
-from deps import (
-    get_attachment_mapping_service,
-    get_attachment_file_service,
-    get_chat2edit,
-    get_context_file_service,
-    get_message,
-)
+from deps import (get_attachment_file_service, get_attachment_mapping_service,
+                  get_chat2edit, get_context_file_service, get_message)
 from schemas import ChatCycleModel, MessageModel, ResponseModel
 from services import AttachmentMappingService, FileService
 from utils.decorators import handle_exceptions
 from utils.factories import create_uuid4
-from utils.files import create_buffer_from_dict
 
 router = APIRouter()
 
@@ -45,7 +39,8 @@ async def chat_endpoint(
 
 
 async def upload_context(
-    context: Dict[str, Any], context_file_service: FileService = Depends(get_context_file_service)
+    context: Dict[str, Any],
+    context_file_service: FileService = Depends(get_context_file_service),
 ) -> str:
     context_bytes = json.dumps(context).encode("utf-8")
     context_path = f"{create_uuid4()}.json"

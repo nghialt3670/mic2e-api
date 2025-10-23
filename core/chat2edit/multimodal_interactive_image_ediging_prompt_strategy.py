@@ -2,12 +2,10 @@ from chat2edit.models import Feedback
 from chat2edit.prompting.strategies import OtcStrategy
 from typing_extensions import override
 
-from core.chat2edit.feedbacks import (
-    EmptyListParametersFeedback,
-    MismatchListParametersFeedback,
-    MissingAllOptionalParametersFeedback,
-    ObjectExtractionQuantityMismatchFeedback,
-)
+from core.chat2edit.feedbacks import (EmptyListParametersFeedback,
+                                      MismatchListParametersFeedback,
+                                      MissingAllOptionalParametersFeedback,
+                                      ObjectExtractionQuantityMismatchFeedback)
 
 
 class MultimodalInteractiveImageEditingPromptStrategy(OtcStrategy):

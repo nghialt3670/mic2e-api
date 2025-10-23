@@ -8,6 +8,7 @@ from chat2edit.execution.decorators import (
 )
 
 from core.chat2edit.decorators import feedback_empty_list_parameters
+from core.chat2edit.models import Image, Object
 from core.chat2edit.models.fabric.filters import (
     BlackWhiteFilter,
     BlurFilter,
@@ -16,8 +17,6 @@ from core.chat2edit.models.fabric.filters import (
     InvertFilter,
     SaturationFilter,
 )
-from core.chat2edit.models.image import Image
-from core.chat2edit.models.object import Object
 from core.chat2edit.utils import get_own_objects
 
 

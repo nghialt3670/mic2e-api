@@ -8,8 +8,7 @@ from chat2edit.execution.decorators import (
 from chat2edit.execution.exceptions import FeedbackException
 
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
-from core.chat2edit.models.image import Image
-from core.chat2edit.models.object import Object
+from core.chat2edit.models import Image, Object
 from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import (
     LabelBasedObjectSegmenter,

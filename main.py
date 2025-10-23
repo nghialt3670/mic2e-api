@@ -2,14 +2,17 @@
 FastAPI application for MIC2E (Multimodal Interactive Image Editing)
 """
 
-from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
+
+import uvicorn
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import uvicorn
-from contextlib import asynccontextmanager
-from typing import Dict, Any
 
-from core.inference.manager.global_manager import get_predictor_manager, shutdown_predictor_manager
+from core.inference.manager.global_manager import (
+    get_predictor_manager,
+    shutdown_predictor_manager,
+)
 from routers.chat_router import router as chat_router
 
 
@@ -21,9 +24,9 @@ async def lifespan(app: FastAPI):
     predictor_manager = get_predictor_manager()
     await predictor_manager.initialize()
     print("Predictor manager initialized successfully")
-    
+
     yield
-    
+
     # Shutdown
     print("Shutting down MIC2E API...")
     await shutdown_predictor_manager()
@@ -35,7 +38,7 @@ app = FastAPI(
     title="MIC2E API",
     description="Multimodal Interactive Image Editing API",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Add CORS middleware
@@ -64,20 +67,13 @@ async def health_check():
         predictor_manager = get_predictor_manager()
         return {
             "status": "healthy",
-            "predictor_manager_initialized": predictor_manager.is_initialized()
+            "predictor_manager_initialized": predictor_manager.is_initialized(),
         }
     except Exception as e:
         return JSONResponse(
-            status_code=500,
-            content={"status": "unhealthy", "error": str(e)}
+            status_code=500, content={"status": "unhealthy", "error": str(e)}
         )
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="info")

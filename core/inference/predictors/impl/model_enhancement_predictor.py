@@ -1,28 +1,33 @@
 # core/predictors/impl/model_enhancing_predictor.py
 import gc
 from typing import Any, Dict
-import torch
+
 import numpy as np
+import torch
 from PIL import Image
 from torchvision import transforms
 from typing_extensions import override
 
-from core.inference.predictors.impl.img_enhancing_model.aesthetic_regressor import AestheticRegressor
-from core.inference.predictors.parameter_enhancement_predictor import ParameterEnhancementPredictor
+from core.inference.predictors.impl.img_enhancing_model.aesthetic_regressor import (
+    AestheticRegressor,
+)
+from core.inference.predictors.parameter_enhancement_predictor import (
+    ParameterEnhancementPredictor,
+)
 
 
 class ModelEnhancingPredictor(ParameterEnhancementPredictor):
     def __init__(
         self,
         checkpoint_path: str,
-        factors: list = ['saturation', 'brightness', 'tint', 'temperature', 'contrast'],
+        factors: list = ["saturation", "brightness", "tint", "temperature", "contrast"],
         factors_coefs: dict = {
-        'saturation': 43,
-        'brightness': 43,
-        'tint': 30,
-        'temperature': 30,
-        'contrast': 43,
-    },
+            "saturation": 43,
+            "brightness": 43,
+            "tint": 30,
+            "temperature": 30,
+            "contrast": 43,
+        },
         n_factors: int = 5,
         activation: str = "tanh",
         backbone: str = "resnet18",
@@ -38,14 +43,15 @@ class ModelEnhancingPredictor(ParameterEnhancementPredictor):
         self.model: Any = None
 
     def _build_transform(self):
-        return transforms.Compose([
-            transforms.Resize((640, 640)),
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[0.485, 0.456, 0.406],
-                std=[0.229, 0.224, 0.225]
-            )
-        ])
+        return transforms.Compose(
+            [
+                transforms.Resize((640, 640)),
+                transforms.ToTensor(),
+                transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+                ),
+            ]
+        )
 
     @override
     def load(self) -> None:
@@ -72,13 +78,17 @@ class ModelEnhancingPredictor(ParameterEnhancementPredictor):
             raise RuntimeError("Model not loaded. Call load() before predict.")
 
         transform = self._build_transform()
+
         class Normalizer:
             def __init__(self, coefs):
                 self.coefs = np.array(list(coefs.values()), dtype=np.float32)
+
             def transform(self, labels):
                 return labels / self.coefs
+
             def inverse_transform(self, norm_labels):
                 return norm_labels * self.coefs
+
         label_normalizer = Normalizer(self.factors_coefs)
         image_tensor = transform(image).unsqueeze(0).to(self.device)
         with torch.no_grad():
@@ -86,4 +96,6 @@ class ModelEnhancingPredictor(ParameterEnhancementPredictor):
 
         preds_denorm = label_normalizer.inverse_transform(preds)
 
-        return {self.factors[i]: float(preds_denorm[i]) for i in range(len(self.factors))}
+        return {
+            self.factors[i]: float(preds_denorm[i]) for i in range(len(self.factors))
+        }

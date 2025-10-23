@@ -1,9 +1,10 @@
-from abc import abstractmethod
 from typing import Any, Dict, List
 
 from chat2edit.base import ContextProvider
 from chat2edit.models import ChatCycle
 
+from core.chat2edit.exemplars.en_exemplars import EN_EXEMPLARS
+from core.chat2edit.exemplars.vi_exemplars import VI_EXEMPLARS
 from core.chat2edit.functions import (
     apply_filter,
     extract_object_by_sam,
@@ -13,8 +14,6 @@ from core.chat2edit.functions import (
     respond_to_user,
     shift_entities,
 )
-from core.chat2edit.exemplars.en_exemplars import EN_EXEMPLARS
-from core.chat2edit.exemplars.vi_exemplars import VI_EXEMPLARS
 
 
 class MultimodalInteractiveImageEditingContextProvider(ContextProvider):

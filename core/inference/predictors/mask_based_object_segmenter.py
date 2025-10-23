@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from collections import namedtuple
-from typing import List, Tuple
+from typing import List
 
 from PIL import Image
 

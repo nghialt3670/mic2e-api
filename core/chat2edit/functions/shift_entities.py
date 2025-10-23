@@ -11,11 +11,7 @@ from core.chat2edit.decorators import (
     feedback_invalid_parameter_type,
     feedback_mismatch_list_parameters,
 )
-from core.chat2edit.models.box import Box
-from core.chat2edit.models.image import Image
-from core.chat2edit.models.object import Object
-from core.chat2edit.models.point import Point
-from core.chat2edit.models.text import Text
+from core.chat2edit.models import Box, Image, Object, Point, Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 
 

@@ -4,7 +4,6 @@ from PIL.Image import Image as PILImage
 
 from core.chat2edit.models.fabric.filters import FabricFilter
 from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
-from core.chat2edit.models.object import Object
 from utils.image import convert_data_url_to_image, convert_image_to_data_url
 
 

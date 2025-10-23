@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
-from hydra import compose, initialize_config_dir
+from hydra import initialize_config_dir
 from hydra.core.global_hydra import GlobalHydra
 from PIL import Image
 from sam2.build_sam import build_sam2

@@ -2,9 +2,8 @@ import gc
 from typing import Any, List
 
 import groundingdino.datasets.transforms as T
-import numpy as np
 import torch
-from groundingdino.util.inference import load_image, load_model, predict
+from groundingdino.util.inference import load_model, predict
 from PIL import Image
 from typing_extensions import override
 

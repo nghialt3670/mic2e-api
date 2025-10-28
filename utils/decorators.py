@@ -2,10 +2,14 @@
 Decorators for MIC2E API
 """
 
+import logging
+import traceback
 from functools import wraps
 from typing import Callable
 
 from fastapi import HTTPException
+
+logger = logging.getLogger(__name__)
 
 
 def handle_exceptions(func: Callable) -> Callable:
@@ -28,18 +32,21 @@ def handle_exceptions(func: Callable) -> Callable:
             raise
         except ValueError as e:
             # Handle validation errors with 400 status
+            logger.warning(f"Validation error in {func.__name__}: {str(e)}")
             raise HTTPException(status_code=400, detail=str(e))
         except PermissionError as e:
             # Handle permission errors with 403 status
+            logger.warning(f"Permission error in {func.__name__}: {str(e)}")
             raise HTTPException(status_code=403, detail=str(e))
         except FileNotFoundError as e:
             # Handle file not found errors with 404 status
+            logger.warning(f"File not found in {func.__name__}: {str(e)}")
             raise HTTPException(status_code=404, detail=str(e))
         except Exception as e:
             # Handle all other exceptions with 500 status
+            logger.error(f"Unhandled exception in {func.__name__}: {str(e)}")
+            logger.error(f"Traceback:\n{traceback.format_exc()}")
             error_detail = str(e)
-            # In development, you might want to include traceback
-            # error_detail = f"{str(e)}\n\nTraceback:\n{traceback.format_exc()}"
             raise HTTPException(status_code=500, detail=error_detail)
 
     @wraps(func)
@@ -51,18 +58,21 @@ def handle_exceptions(func: Callable) -> Callable:
             raise
         except ValueError as e:
             # Handle validation errors with 400 status
+            logger.warning(f"Validation error in {func.__name__}: {str(e)}")
             raise HTTPException(status_code=400, detail=str(e))
         except PermissionError as e:
             # Handle permission errors with 403 status
+            logger.warning(f"Permission error in {func.__name__}: {str(e)}")
             raise HTTPException(status_code=403, detail=str(e))
         except FileNotFoundError as e:
             # Handle file not found errors with 404 status
+            logger.warning(f"File not found in {func.__name__}: {str(e)}")
             raise HTTPException(status_code=404, detail=str(e))
         except Exception as e:
             # Handle all other exceptions with 500 status
+            logger.error(f"Unhandled exception in {func.__name__}: {str(e)}")
+            logger.error(f"Traceback:\n{traceback.format_exc()}")
             error_detail = str(e)
-            # In development, you might want to include traceback
-            # error_detail = f"{str(e)}\n\nTraceback:\n{traceback.format_exc()}"
             raise HTTPException(status_code=500, detail=error_detail)
 
     # Return appropriate wrapper based on whether the function is async
@@ -96,6 +106,8 @@ def handle_exceptions_with_status(status_code: int = 500):
                 # Re-raise HTTPExceptions as they are already properly formatted
                 raise
             except Exception as e:
+                logger.error(f"Exception in {func.__name__}: {str(e)}")
+                logger.error(f"Traceback:\n{traceback.format_exc()}")
                 raise HTTPException(status_code=status_code, detail=str(e))
 
         @wraps(func)
@@ -106,6 +118,8 @@ def handle_exceptions_with_status(status_code: int = 500):
                 # Re-raise HTTPExceptions as they are already properly formatted
                 raise
             except Exception as e:
+                logger.error(f"Exception in {func.__name__}: {str(e)}")
+                logger.error(f"Traceback:\n{traceback.format_exc()}")
                 raise HTTPException(status_code=status_code, detail=str(e))
 
         # Return appropriate wrapper based on whether the function is async

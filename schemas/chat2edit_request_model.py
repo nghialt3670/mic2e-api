@@ -29,7 +29,6 @@ DEFAULT_CHAT2EDIT_CONFIG = Chat2EditConfig(
 
 
 class Chat2EditRequestModel(BaseModel):
-    chatId: str = Field(description="The id of the chat")
     message: MessageModel = Field(description="The user message")
     language: Literal["en", "vi"] = Field(
         default="en", description="The language of the user message"

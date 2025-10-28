@@ -2,7 +2,9 @@ from typing import List
 
 from pydantic import BaseModel
 
+from schemas.attachment_model import AttachmentModel
+
 
 class MessageModel(BaseModel):
     text: str
-    attachment_urls: List[str]
+    attachments: List[AttachmentModel]

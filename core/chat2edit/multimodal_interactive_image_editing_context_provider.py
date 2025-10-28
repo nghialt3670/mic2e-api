@@ -5,15 +5,14 @@ from chat2edit.models import ChatCycle
 
 from core.chat2edit.exemplars.en_exemplars import EN_EXEMPLARS
 from core.chat2edit.exemplars.vi_exemplars import VI_EXEMPLARS
-from core.chat2edit.functions import (
-    apply_filter,
-    extract_object_by_sam,
-    extract_objects_by_label,
-    locate_entities,
-    remove_entities,
-    respond_to_user,
-    shift_entities,
-)
+# Import functions DIRECTLY from their source files to avoid being detected as external packages
+from core.chat2edit.functions.apply_filter import apply_filter
+from core.chat2edit.functions.extract_object_by_sam import extract_object_by_sam
+from core.chat2edit.functions.extract_objects_by_label import extract_objects_by_label
+from core.chat2edit.functions.locate_entities import locate_entities
+from core.chat2edit.functions.remove_entities import remove_entities
+from core.chat2edit.functions.respond_to_user import respond_to_user
+from core.chat2edit.functions.shift_entities import shift_entities
 
 
 class MultimodalInteractiveImageEditingContextProvider(ContextProvider):

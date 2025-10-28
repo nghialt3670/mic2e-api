@@ -6,7 +6,6 @@ from constants import SUPABASE_CONTEXT_BUCKET
 from services.file_service import FileService
 from services.impl.supabase_file_service import SupabaseFileService
 
-
 async def get_context_file_service(
     supabase_async_client: AsyncClient = Depends(create_supabase_async_client),
 ) -> FileService:

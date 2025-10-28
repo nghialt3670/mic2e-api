@@ -1,5 +1,9 @@
+import inspect
+from typing import Any, Dict
+
 from chat2edit.models import Feedback
 from chat2edit.prompting.strategies import OtcStrategy
+from chat2edit.prompting.stubbing.stubs import CodeStub, FunctionStub, ClassStub
 from typing_extensions import override
 
 from core.chat2edit.feedbacks import (
@@ -35,3 +39,29 @@ class MultimodalInteractiveImageEditingPromptStrategy(OtcStrategy):
 
         # Fall back to parent implementation for other feedbacks
         return super().create_feedback_text(feedback)
+
+    @override
+    def create_context_code(self, context: Dict[str, Any]) -> str:
+        """
+        Override to force creation of function stubs instead of imports.
+        
+        The default implementation uses is_external_package() which checks if the module
+        starts with "chat2edit". Since our functions are in "core.chat2edit.*", they're
+        detected as external and converted to imports. This override forces them to be
+        rendered as function stubs.
+        """
+        blocks = []
+        
+        for k, v in context.items():
+            if not inspect.isclass(v) and not inspect.isfunction(v):
+                continue
+            
+            # Always create stubs for classes and functions, never imports
+            if inspect.isclass(v):
+                blocks.append(ClassStub.from_class(v))
+            elif inspect.isfunction(v):
+                blocks.append(FunctionStub.from_function(v))
+        
+        # Create a CodeStub with our blocks
+        code_stub = CodeStub(blocks=blocks)
+        return code_stub.generate()

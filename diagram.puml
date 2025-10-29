@@ -1,0 +1,191 @@
+@startuml
+!define ABSTRACT_CLASS abstract class
+!define INTERFACE interface
+
+package "Base Interfaces" {
+    ABSTRACT_CLASS ContextProvider {
+        + {abstract} get_context(): Dict[str, Any]
+        + {abstract} get_exemplars(): List[ChatCycle]
+    }
+
+    class MultimodalContextProvider {
+        + get_context(): Dict[str, Any]
+    }
+
+    ABSTRACT_CLASS Llm {
+        + {abstract} generate(messages: List[str]): str
+    }
+
+    ABSTRACT_CLASS PromptStrategy {
+        + {abstract} create_prompt(cycles, exemplars, context): str
+        + {abstract} get_refine_prompt(): str
+        + {abstract} extract_code(text: str): str
+    }
+
+    class OtcStrategy {
+        + create_prompt(cycles, exemplars, context): str
+        + get_refine_prompt(): str
+        + filter_context(context): Dict[str, Any]
+        + extract_code(text: str): str
+        + create_context_code(context): str
+        + create_otc_sequences(cycle: ChatCycle): str
+        + create_observation_from_request(request: Message): str
+        + create_feedback_text(feedback: Feedback): str
+        + create_observation_from_feedback(feedback: Feedback): str
+        + extract_thinking_commands(text: str): Tuple[str, str]
+    }
+
+    class MultimodalOtcStrategy {
+        + create_feedback_text(feedback: Feedback): str
+    }
+}
+
+package "Core Framework" {
+    class Chat2Edit {
+        - cycles: List[ChatCycle]
+        - llm: Llm
+        - provider: ContextProvider
+        - strategy: PromptStrategy
+        - config: Chat2EditConfig
+        - callbacks: Chat2EditCallbacks
+        + __init__(cycles, llm, provider, strategy, config, callbacks)
+        + send(message: Message): Optional[Message]
+        - _contextualize(target, context, existed: bool)
+        - _prompt(cycles): Tuple[List[str], List[str], Optional[Error], Optional[str]]
+        - _execute(code: str, context): Tuple[...]
+    }
+
+    class Chat2EditConfig {
+        + max_cycles_per_prompt: int = 15
+        + max_loops_per_cycle: int = 4
+        + max_prompts_per_loop: int = 2
+    }
+
+    class Chat2EditCallbacks {
+        + on_request: Optional[Callable]
+        + on_prompt: Optional[Callable]
+        + on_answer: Optional[Callable]
+        + on_extract: Optional[Callable]
+        + on_process: Optional[Callable]
+        + on_execute: Optional[Callable]
+        + on_feedback: Optional[Callable]
+        + on_respond: Optional[Callable]
+    }
+}
+
+package "Data Models" {
+    class Timestamped {
+        + timestamp: int
+    }
+
+    class Message {
+        + text: str
+        + attachments: List[Any]
+    }
+
+    class Feedback {
+        + severity: Severity
+        + attachments: List[Any]
+    }
+
+    class PromptExecuteLoop {
+        + prompts: List[str]
+        + answers: List[str]
+        + blocks: List[str]
+        + processed_blocks: List[str]
+        + feedback: Optional[Feedback]
+    }
+
+    class ChatCycle {
+        + request: Message
+        + response: Optional[Message]
+        + context: Dict[str, Any]
+        + loops: List[PromptExecuteLoop]
+    }
+}
+
+package "Feedback Types" {
+    class FWFeedback {
+        + InvalidParameterTypeFeedback
+        + ModifiedAttachmentFeedback
+        + IgnoredReturnValueFeedback
+        + UnexpectedErrorFeedback
+        + IncompleteCycleFeedback
+    }
+
+    class EmptyListParametersFeedback {}
+    class MismatchListParametersFeedback{}
+    class MissingAllOptionalParametersFeedback{}
+    class ObjectExtractionQuantityMismatchFeedback{}
+}
+
+package "Image Editing" {
+    ABSTRACT_CLASS Predictor {
+        + {abstract} load(device: str): None
+        + {abstract} unload(): None
+    }
+    
+    class LabelBasedObjectDetector {
+        + detect_with_label(image: Image, label: str): Any
+    }
+    class PointBasedObjectSegmenter {
+        + segment_with_box(image: Image, box: Tuple[int, int, int, int]): Any
+    }
+    class BoxBasedObjectSegmenter {
+        + segment_with_box(image: Image, box: Tuple[int, int]): Any
+    }
+    class LabelBasedOjectSegmenter {
+        + segment_with_label(image: Image, label: str): Any
+    }
+    class MaskBasedObjectSegmenter {
+        + segment_with_mask(image: Image, mask: Image): Any
+    }
+    class MaskBasedImageInpainter {
+        + inpaint_with_mask(image: Image, mask: Image): Any
+    }
+    class ParameterEnhancementPredictor {
+        + predict_enhancement(image: Image)
+    }
+}
+
+' =======================
+' Inheritance relationships
+' =======================
+Timestamped <|-- Message
+Timestamped <|-- Feedback
+
+Feedback <|-- FWFeedback
+Feedback <|-- EmptyListParametersFeedback
+Feedback <|-- MismatchListParametersFeedback
+Feedback <|-- MissingAllOptionalParametersFeedback
+Feedback <|-- ObjectExtractionQuantityMismatchFeedback
+
+ContextProvider <|-- MultimodalContextProvider
+PromptStrategy <|.. OtcStrategy : implements
+OtcStrategy <|-- MultimodalOtcStrategy
+
+Predictor <|-- BoxBasedObjectSegmenter
+Predictor <|-- LabelBasedObjectDetector
+Predictor <|-- PointBasedObjectSegmenter
+Predictor <|-- LabelBasedOjectSegmenter
+Predictor <|-- MaskBasedObjectSegmenter
+Predictor <|-- MaskBasedImageInpainter
+Predictor <|-- ParameterEnhancementPredictor
+' =======================
+' Composition relationships
+' =======================
+Chat2Edit *-- Chat2EditConfig
+Chat2Edit *-- Chat2EditCallbacks
+Chat2Edit o-- ContextProvider
+Chat2Edit o-- Llm
+Chat2Edit o-- PromptStrategy
+
+ChatCycle *-- Message
+ChatCycle *-- PromptExecuteLoop
+PromptExecuteLoop o-- Feedback
+
+' =======================
+' Usage relationships
+' =======================
+Chat2Edit ..> ChatCycle : uses
+@enduml

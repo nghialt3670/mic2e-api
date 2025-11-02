@@ -2,7 +2,7 @@ groundingdino-py==0.4.0
 simple-lama-inpainting==0.1.2
 sam2==1.1.0
 scipy==1.15.3
-chat2edit==2.3.4
+chat2edit==3.0.1
 
 # FastAPI and web server dependencies
 fastapi==0.104.1

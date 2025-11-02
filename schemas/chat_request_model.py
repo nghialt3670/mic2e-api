@@ -1,9 +1,9 @@
-from typing import List, Literal
+from typing import Any, Dict, List, Literal
 
 from chat2edit import Chat2EditConfig
+from chat2edit.models import ChatCycle
 from pydantic import BaseModel, Field
 
-from schemas.chat_cycle_model import ChatCycleModel
 from schemas.message_model import MessageModel
 
 
@@ -11,25 +11,22 @@ class LlmConfig(BaseModel):
     provider: Literal["openai", "google"] = Field(
         default="openai", description="The type of the llm"
     )
-    model_name: str = Field(description="The model name of the llm")
-    max_tokens: int = Field(default=2000, description="The max tokens of the llm")
-    temperature: float = Field(default=0.1, description="The temperature of the llm")
+    model: str = Field(description="The model name of the llm")
+    params: Dict[str, Any] = Field(
+        default_factory=dict, description="The parameters of the llm"
+    )
 
 
-DEFAULT_LLM_CONFIG = LlmConfig(
-    provider="openai", model_name="gpt-3.5-turbo", max_tokens=2000, temperature=0.1
-)
+DEFAULT_LLM_CONFIG = LlmConfig(provider="openai", model="gpt-3.5-turbo", params={})
 
 
 DEFAULT_CHAT2EDIT_CONFIG = Chat2EditConfig(
-    max_cycles_per_prompt=15,
-    max_loops_per_cycle=4,
-    max_prompts_per_loop=2,
+    max_prompt_cycles=5,
+    max_llm_exchanges=2,
 )
 
 
-class Chat2EditRequestModel(BaseModel):
-    message: MessageModel = Field(description="The user message")
+class ChatRequestModel(BaseModel):
     language: Literal["en", "vi"] = Field(
         default="en", description="The language of the user message"
     )
@@ -40,6 +37,8 @@ class Chat2EditRequestModel(BaseModel):
         default=DEFAULT_CHAT2EDIT_CONFIG,
         description="The configuration of the chat2edit",
     )
-    history: List[ChatCycleModel] = Field(
+    message: MessageModel = Field(description="The user message")
+    history: List[ChatCycle] = Field(
         default=[], description="The history of the chat2edit"
     )
+    context_url: str = Field(default="", description="The url of the context")

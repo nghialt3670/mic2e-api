@@ -7,7 +7,7 @@ from supabase._async.client import AsyncClient
 
 from clients import create_supabase_async_client
 from constants import SUPABASE_ATTACHMENT_BUCKET
-from schemas import Chat2EditRequestModel
+from schemas import ChatRequestModel
 from services import AttachmentMappingService, FileService
 from services.impl import FabricAttachmentMappingService, SupabaseFileService
 from utils.files import download_file_to_bytes
@@ -25,17 +25,17 @@ async def get_attachment_file_service(
 
 
 def get_attachments(
-    request: Chat2EditRequestModel = Body(...),
+    request: ChatRequestModel = Body(...),
     attachment_mapping_service: AttachmentMappingService = Depends(
         get_attachment_mapping_service
     ),
 ) -> List[Attachment]:
     attachment_urls = map(lambda x: x.url, request.message.attachments)
     bytess = map(download_file_to_bytes, attachment_urls)
-    filenames = map(lambda x: x.split("/")[-1], attachment_urls)
-    attachments = map(attachment_mapping_service.from_bytes, bytess)
-    attachments = _update_attachment_filenames(attachments, filenames)
-    return list(attachments)
+    filenames = list(map(lambda x: x.original_filename, request.message.attachments))
+    attachments = map(lambda x: attachment_mapping_service.from_bytes(x), bytess)
+    for i, attachment in enumerate(attachments):
+        attachment.__filename__ = filenames[i]
 
-def _update_attachment_filenames(attachments: List[Attachment], filenames: List[str]) -> List[Attachment]:
-    return map(lambda x, y: Attachment(x, filename=y), attachments, filenames)
+    print(list(attachments))
+    return list(attachments)

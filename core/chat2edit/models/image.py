@@ -1,13 +1,20 @@
 from typing import List
 
 from PIL.Image import Image as PILImage
+from pydantic import Field
 
 from core.chat2edit.models.fabric.filters import FabricFilter
 from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
+from core.chat2edit.models.referent import Referent
+from utils.factories import create_image_filename
 from utils.image import convert_data_url_to_image, convert_image_to_data_url
 
 
-class Image(FabricGroup):
+class Image(FabricGroup, Referent):
+    filename: str = Field(
+        default_factory=create_image_filename, description="Image filename"
+    )
+
     def from_image(image: PILImage) -> "Image":
         base_image = FabricImage(
             src=convert_image_to_data_url(image), width=image.width, height=image.height

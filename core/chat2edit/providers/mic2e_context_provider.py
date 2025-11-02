@@ -1,11 +1,9 @@
 from typing import Any, Dict, List
 
-from chat2edit.base import ContextProvider
+from chat2edit.context.providers import ContextProvider
 from chat2edit.models import ChatCycle
 
-from core.chat2edit.exemplars.en_exemplars import EN_EXEMPLARS
-from core.chat2edit.exemplars.vi_exemplars import VI_EXEMPLARS
-# Import functions DIRECTLY from their source files to avoid being detected as external packages
+from core.chat2edit.exemplars import MIC2E_EN_EXEMPLARS, MIC2E_VI_EXEMPLARS
 from core.chat2edit.functions.apply_filter import apply_filter
 from core.chat2edit.functions.extract_object_by_sam import extract_object_by_sam
 from core.chat2edit.functions.extract_objects_by_label import extract_objects_by_label
@@ -15,7 +13,7 @@ from core.chat2edit.functions.respond_to_user import respond_to_user
 from core.chat2edit.functions.shift_entities import shift_entities
 
 
-class MultimodalInteractiveImageEditingContextProvider(ContextProvider):
+class Mic2eContextProvider(ContextProvider):
     def __init__(self, language: str):
         super().__init__()
         self._language = language
@@ -33,8 +31,8 @@ class MultimodalInteractiveImageEditingContextProvider(ContextProvider):
 
     def get_exemplars(self) -> List[ChatCycle]:
         if self._language == "en":
-            return EN_EXEMPLARS
+            return MIC2E_EN_EXEMPLARS
         elif self._language == "vi":
-            return VI_EXEMPLARS
+            return MIC2E_VI_EXEMPLARS
         else:
             raise ValueError(f"Unsupported language: {self._language}")

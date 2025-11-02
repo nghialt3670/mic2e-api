@@ -1,7 +1,13 @@
 from typing import List
 
-from chat2edit import Chat2Edit, Chat2EditCallbacks, Chat2EditConfig
-from chat2edit.base import ContextProvider, Llm, PromptStrategy
+from chat2edit import (
+    Chat2Edit,
+    Chat2EditCallbacks,
+    Chat2EditConfig,
+    ContextProvider,
+    Llm,
+    PromptStrategy,
+)
 from chat2edit.models import ChatCycle
 
 CHAT2EDIT_CALLBACKS = Chat2EditCallbacks(
@@ -17,14 +23,12 @@ CHAT2EDIT_CALLBACKS = Chat2EditCallbacks(
 
 
 def create_chat2edit(
-    cycles: List[ChatCycle],
     llm: Llm,
-    provider: ContextProvider,
+    conteprovider: ContextProvider,
     strategy: PromptStrategy,
     config: Chat2EditConfig,
 ) -> Chat2Edit:
     return Chat2Edit(
-        cycles=cycles,
         llm=llm,
         provider=provider,
         strategy=strategy,

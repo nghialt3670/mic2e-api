@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from core.inference.manager import get_predictor_manager, shutdown_predictor_manager
-from routers.chat_router import router as chat_router
+from routers import chat_router
 
 
 @asynccontextmanager

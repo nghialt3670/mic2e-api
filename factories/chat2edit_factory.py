@@ -1,4 +1,3 @@
-from typing import List
 
 from chat2edit import (
     Chat2Edit,
@@ -8,7 +7,6 @@ from chat2edit import (
     Llm,
     PromptStrategy,
 )
-from chat2edit.models import ChatCycle
 
 CHAT2EDIT_CALLBACKS = Chat2EditCallbacks(
     on_request=lambda message: print(f"Request: {message}"),

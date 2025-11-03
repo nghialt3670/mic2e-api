@@ -1,4 +1,3 @@
-import json
 from typing import List
 
 from chat2edit.context import Attachment

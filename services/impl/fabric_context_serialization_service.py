@@ -1,6 +1,5 @@
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Union
 
-from chat2edit.context import Attachment
 from pydantic import TypeAdapter
 
 from core.chat2edit.models import Box, Image, Object, Point, Text

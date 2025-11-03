@@ -12,10 +12,8 @@ from deps import (
     get_attachment_file_service,
     get_attachment_mapping_service,
     get_chat2edit,
-    get_context_file_service,
     get_context_serialization_service,
     get_context_storage_service,
-    get_message,
 )
 from schemas import (
     AttachmentModel,
@@ -30,9 +28,7 @@ from services import (
     FileService,
     StorageService,
 )
-from utils.decorators import handle_exceptions
 from utils.factories import create_uuid4
-from utils.files import download_file_to_bytes
 
 chat_router = APIRouter()
 
@@ -146,5 +142,4 @@ def clean_context(context: Dict[str, Any], allowed_type: Type) -> Dict[str, Any]
             cleaned_context[k] = v
         except Exception as e:
             print(e)
-            pass
     return cleaned_context

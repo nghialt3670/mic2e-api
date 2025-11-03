@@ -5,12 +5,10 @@ from chat2edit.execution.decorators import (
     feedback_ignored_return_value,
     feedback_invalid_parameter_type,
     feedback_unexpected_error,
-)
-
-from core.chat2edit.decorators import (
     feedback_empty_list_parameters,
     feedback_mismatch_list_parameters,
 )
+
 from core.chat2edit.models import Box, Image, Object, Point, Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 

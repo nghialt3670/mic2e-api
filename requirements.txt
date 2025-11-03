@@ -2,7 +2,7 @@ groundingdino-py==0.4.0
 simple-lama-inpainting==0.1.2
 sam2==1.1.0
 scipy==1.15.3
-chat2edit==3.0.1
+chat2edit==3.0.3
 
 # FastAPI and web server dependencies
 fastapi==0.104.1
@@ -10,4 +10,4 @@ uvicorn[standard]==0.24.0
 pydantic==2.5.0
 requests==2.31.0
 pillow==9.5.0
-supabase
+supabase==2.22.1

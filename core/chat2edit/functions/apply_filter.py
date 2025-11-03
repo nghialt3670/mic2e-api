@@ -5,9 +5,9 @@ from chat2edit.execution.decorators import (
     feedback_ignored_return_value,
     feedback_invalid_parameter_type,
     feedback_unexpected_error,
+    feedback_empty_list_parameters,
 )
 
-from core.chat2edit.decorators import feedback_empty_list_parameters
 from core.chat2edit.models import Image, Object
 from core.chat2edit.models.fabric.filters import (
     BlackWhiteFilter,

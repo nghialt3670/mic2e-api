@@ -3,11 +3,11 @@ from typing import List, Optional, Tuple
 from chat2edit.execution.decorators import (
     feedback_ignored_return_value,
     feedback_invalid_parameter_type,
+    feedback_missing_all_optional_parameters,
     feedback_unexpected_error,
 )
 from PIL import Image as PILImage
 
-from core.chat2edit.decorators import feedback_missing_all_optional_parameters
 from core.chat2edit.models import Box, Image, Object, Point
 from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import SamBasedObjectSegmenter, SamBasedSegmentedObject

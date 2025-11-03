@@ -73,17 +73,10 @@ class Mic2eContextStrategy(ContextStrategy):
     def contextualize_feedback(
         self, feedback: ExecutionFeedback, context: Dict[str, Any]
     ) -> ContextualizedFeedback:
-        paths = []
-
-        for attachment in feedback.attachments:
-            if not isinstance(attachment, Image):
-                raise ValueError("Attachments must be Image")
-
-            variable_name = self._get_image_variable_name(context)
-            context[variable_name] = Attachment(attachment)
-            paths.append(variable_name)
-
-        return ContextualizedFeedback(text=feedback.text, paths=paths)
+        if isinstance(feedback, ContextualizedFeedback):
+            return feedback
+        
+        raise ValueError(f"Unsupported feedback type: {type(feedback)}")
 
     def decontextualize_message(
         self, message: ContextualizedMessage, context: Dict[str, Any]

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Literal, Optional
 
 from chat2edit import Chat2EditConfig
 from chat2edit.models import ChatCycle
@@ -41,4 +41,6 @@ class ChatRequestModel(BaseModel):
     history: List[ChatCycle] = Field(
         default=[], description="The history of the chat2edit"
     )
-    context_url: str = Field(default="", description="The url of the context")
+    context_url: Optional[str] = Field(
+        default=None, description="The url of the context"
+    )

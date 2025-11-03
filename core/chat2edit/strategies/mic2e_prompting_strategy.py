@@ -1,10 +1,10 @@
-from chat2edit.prompting.strategies import OtcPromptingStrategy
 from chat2edit.models import ContextualizedFeedback
-from core.chat2edit.feedbacks import (
-    LabelBasedObjectExtractionQuantityMismatchFeedback,
-)
+from chat2edit.prompting.strategies import OtcPromptingStrategy
+
+from core.chat2edit.feedbacks import LabelBasedObjectExtractionQuantityMismatchFeedback
 
 LABEL_BASED_OBJECT_EXTRACTION_QUANTITY_MISMATCH_FEEDBACK_TEXT = "Expected to extract {num_expected_objects} object(s) with label '{label}', but found {num_extracted_objects} object(s)."
+
 
 class Mic2ePromptingStrategy(OtcPromptingStrategy):
     def __init__(self) -> None:

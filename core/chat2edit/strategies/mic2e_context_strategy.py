@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 
 from chat2edit.context.attachments import Attachment
 from chat2edit.context.strategies import ContextStrategy
@@ -10,13 +10,28 @@ from chat2edit.models import (
     ContextualizedMessage,
     ExecutionFeedback,
 )
+from chat2edit.utils import SmartTypeAdapter
 
 from core.chat2edit.models import Box, Image, Object, Point, Text
+
+CONTEXT_VALUE_BASE_TYPE = Union[Image, Object, Box, Point, Text, int, str, float, bool]
+CONTEXT_TYPE = Dict[str, Union[CONTEXT_VALUE_BASE_TYPE, List[CONTEXT_VALUE_BASE_TYPE]]]
 
 
 class Mic2eContextStrategy(ContextStrategy):
     def __init__(self) -> None:
         super().__init__()
+
+    def filter_context(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        filtered_context = {}
+        type_adapter = SmartTypeAdapter(CONTEXT_TYPE)
+        for k, v in context.items():
+            try:
+                type_adapter.validate_python(v)
+                filtered_context[k] = v
+            except Exception as e:
+                pass
+        return filtered_context
 
     def contextualize_message(
         self, message: ChatMessage, context: Dict[str, Any]
@@ -75,7 +90,7 @@ class Mic2eContextStrategy(ContextStrategy):
     ) -> ContextualizedFeedback:
         if isinstance(feedback, ContextualizedFeedback):
             return feedback
-        
+
         raise ValueError(f"Unsupported feedback type: {type(feedback)}")
 
     def decontextualize_message(

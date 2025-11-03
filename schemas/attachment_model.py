@@ -1,8 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class AttachmentModel(BaseModel):
-    context_path: str
-    original_filename: str
-    upload_path: str
-    upload_url: str
+    filename: str = Field(description="The filename of the attachment")
+    upload_path: str = Field(description="The path of the attachment in the storage")
+    upload_url: str = Field(description="The url of the attachment in the storage")

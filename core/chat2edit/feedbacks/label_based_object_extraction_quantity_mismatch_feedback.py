@@ -1,6 +1,6 @@
+from chat2edit.models import ContextualizedFeedback
 from pydantic import Field
 
-from chat2edit.models import ContextualizedFeedback
 
 class LabelBasedObjectExtractionQuantityMismatchFeedback(ContextualizedFeedback):
     label: str = Field(description="The label of the objects")

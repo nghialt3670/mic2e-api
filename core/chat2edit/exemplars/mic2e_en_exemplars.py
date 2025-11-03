@@ -1,4 +1,11 @@
-from chat2edit.models import ChatCycle, ContextualizedMessage, ExecutionBlock, Exemplar, PromptCycle, PromptExchange
+from chat2edit.models import (
+    ChatCycle,
+    ContextualizedMessage,
+    ExecutionBlock,
+    Exemplar,
+    PromptCycle,
+    PromptExchange,
+)
 from chat2edit.models.prompt_exchange import LlmMessage
 
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
@@ -25,7 +32,7 @@ MIC2E_EN_EXEMPLARS = Exemplar(
                                     ```
                                     """,
                                 )
-                            ]
+                            ],
                         ),
                     ],
                     blocks=[
@@ -46,13 +53,15 @@ MIC2E_EN_EXEMPLARS = Exemplar(
                         PromptExchange(
                             prompt=LlmMessage(text=""),
                             answers=[
-                                LlmMessage(text="""
+                                LlmMessage(
+                                    text="""
                                 thinking: The extract_objects_by_label function couldn't find any dogs in the image. Since there is the extract_object_by_sam function, I could try ask the user for the bounding box of the dog in the image and use the extract_object_by_sam function to extract the dog from the image
                                 commands:
                                 ```python
                                 respond_to_user(text='I can't find any dogs in the image. Can you please provide me the bounding box of the dog in the image?')
                                 ```
-                                """),
+                                """
+                                ),
                             ],
                         ),
                     ],
@@ -93,7 +102,7 @@ MIC2E_EN_EXEMPLARS = Exemplar(
                                     ```
                                     """,
                                 )
-                            ]
+                            ],
                         ),
                     ],
                     blocks=[

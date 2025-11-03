@@ -1,4 +1,11 @@
-from chat2edit.models import ChatCycle, ContextualizedMessage, ExecutionBlock, Exemplar, PromptCycle, PromptExchange
+from chat2edit.models import (
+    ChatCycle,
+    ContextualizedMessage,
+    ExecutionBlock,
+    Exemplar,
+    PromptCycle,
+    PromptExchange,
+)
 from chat2edit.models.prompt_exchange import LlmMessage
 
 from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
@@ -25,7 +32,7 @@ MIC2E_VI_EXEMPLARS = Exemplar(
                                     ```
                                     """,
                                 )
-                            ]
+                            ],
                         ),
                     ],
                     blocks=[
@@ -46,13 +53,15 @@ MIC2E_VI_EXEMPLARS = Exemplar(
                         PromptExchange(
                             prompt=LlmMessage(text=""),
                             answers=[
-                                LlmMessage(text="""
+                                LlmMessage(
+                                    text="""
                                 thinking: Hàm extract_objects_by_label không thể tìm thấy con chó nào trong ảnh. Vì có hàm extract_object_by_sam, tôi có thể thử yêu cầu người dùng cung cấp khung chứa của con chó trong ảnh và sử dụng hàm extract_object_by_sam để trích xuất con chó từ ảnh
                                 commands:
                                 ```python
                                 respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
                                 ```
-                                """),
+                                """
+                                ),
                             ],
                         ),
                     ],
@@ -93,7 +102,7 @@ MIC2E_VI_EXEMPLARS = Exemplar(
                                     ```
                                     """,
                                 )
-                            ]
+                            ],
                         ),
                     ],
                     blocks=[
@@ -115,4 +124,3 @@ MIC2E_VI_EXEMPLARS = Exemplar(
         ),
     ]
 )
-

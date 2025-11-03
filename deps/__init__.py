@@ -1,9 +1,8 @@
 from deps.attachment_deps import (
-    get_attachment_file_service,
-    get_attachment_mapping_service,
-    get_attachments,
+    get_attachment_serialization_service,
+    get_attachment_storage_service,
 )
-from deps.chat2edit_deps import get_chat2edit, get_message
+from deps.chat2edit_deps import get_chat2edit
 from deps.context_deps import (
     get_context_serialization_service,
     get_context_storage_service,
@@ -11,11 +10,9 @@ from deps.context_deps import (
 from deps.supabase_deps import get_supabase_async_client
 
 __all__ = [
-    "get_attachment_file_service",
-    "get_attachment_mapping_service",
-    "get_attachments",
+    "get_attachment_serialization_service",
+    "get_attachment_storage_service",
     "get_chat2edit",
-    "get_message",
     "get_context_storage_service",
     "get_context_serialization_service",
     "get_supabase_async_client",

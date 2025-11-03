@@ -8,7 +8,7 @@ from chat2edit.models import (
 )
 from chat2edit.models.prompt_exchange import LlmMessage
 
-from core.chat2edit.feedbacks import ObjectExtractionQuantityMismatchFeedback
+from core.chat2edit.feedbacks import LabelBasedObjectExtractionQuantityMismatchFeedback
 
 MIC2E_EN_EXEMPLARS = Exemplar(
     cycles=[
@@ -40,8 +40,12 @@ MIC2E_EN_EXEMPLARS = Exemplar(
                             generated_code="""
                             dogs = extract_objects_by_label(image, label='dog', expected_num_objects=1)
                             """,
-                            feedback=ObjectExtractionQuantityMismatchFeedback(
+                            processed_code="""
+                            dogs = extract_objects_by_label(image, label='dog', expected_num_objects=1)
+                            """,
+                            feedback=LabelBasedObjectExtractionQuantityMismatchFeedback(
                                 severity="error",
+                                label="dog",
                                 num_expected_objects=1,
                                 num_extracted_objects=0,
                             ),
@@ -68,6 +72,9 @@ MIC2E_EN_EXEMPLARS = Exemplar(
                     blocks=[
                         ExecutionBlock(
                             generated_code="""
+                            respond_to_user(text='I can't find any dogs in the image. Can you please provide me the bounding box of the dog in the image?')
+                            """,
+                            processed_code="""
                             respond_to_user(text='I can't find any dogs in the image. Can you please provide me the bounding box of the dog in the image?')
                             """,
                             response=ContextualizedMessage(
@@ -108,6 +115,12 @@ MIC2E_EN_EXEMPLARS = Exemplar(
                     blocks=[
                         ExecutionBlock(
                             generated_code="""
+                            cat = extract_object_by_sam(image_1, box=box_1)
+                            bird = extract_object_by_sam(image_1, box=box_2)
+                            image_2 = remove_entities(image_1, [cat, bird])
+                            respond_to_user(text='The cat and the bird have been removed from the image', paths=[image_2])
+                            """,
+                            processed_code="""
                             cat = extract_object_by_sam(image_1, box=box_1)
                             bird = extract_object_by_sam(image_1, box=box_2)
                             image_2 = remove_entities(image_1, [cat, bird])

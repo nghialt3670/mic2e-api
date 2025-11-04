@@ -10,7 +10,7 @@ from chat2edit.models import (
     ContextualizedMessage,
     ExecutionFeedback,
 )
-from chat2edit.utils import SmartTypeAdapter
+from pydantic import TypeAdapter
 
 from core.chat2edit.models import Box, Image, Object, Point, Text
 
@@ -24,7 +24,7 @@ class Mic2eContextStrategy(ContextStrategy):
 
     def filter_context(self, context: Dict[str, Any]) -> Dict[str, Any]:
         filtered_context = {}
-        type_adapter = SmartTypeAdapter(CONTEXT_TYPE)
+        type_adapter = TypeAdapter(CONTEXT_TYPE)
         for k, v in context.items():
             try:
                 type_adapter.validate_python(v)

@@ -5,8 +5,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from core.inference.manager import get_predictor_manager, shutdown_predictor_manager
+from core.inference.manager import (
+    PredictorConfig,
+    get_predictor_manager,
+    shutdown_predictor_manager,
+)
 from routers import chat_router
+from core.inference.predictors import TwoStageObjectSegmenter
+from core.inference.predictors import GroundingDinoObjectDetector
+from core.inference.predictors import Sam2ObjectSegmenter
 
 
 @asynccontextmanager
@@ -15,6 +22,23 @@ async def lifespan(app: FastAPI):
     # Startup
     print("Starting MIC2E API...")
     predictor_manager = get_predictor_manager()
+    label_based_object_detector = GroundingDinoObjectDetector(
+        checkpoint_path="./resources/weights/groundingdino_swint_ogc.pth",
+        config_path="./config/GroundingDINO_SwinT_OGC.py",
+    )
+    box_based_object_segmenter = Sam2ObjectSegmenter(
+        checkpoint_path="./resources/weights/sam2.1_hiera_large.pt",
+        config_path="./config/sam2.1_hiera_1.yaml",
+    )
+    predictor_manager.register(
+        PredictorConfig(
+            predictor_class=TwoStageObjectSegmenter,
+            init_args={"detector": label_based_object_detector, "segmenter": box_based_object_segmenter},
+            pool_size=1,
+            device="cuda",
+            preload=False,
+        )
+    )
     await predictor_manager.initialize()
     print("Predictor manager initialized successfully")
 

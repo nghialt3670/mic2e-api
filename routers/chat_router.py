@@ -43,7 +43,9 @@ async def chat(
 ):
     request_message = ChatMessage(text=request.message.text)
     for attachment in request.message.attachments:
-        attachment_bytes = await attachment_storage_service.download(attachment.url)
+        attachment_bytes = await attachment_storage_service.download(
+            attachment.upload_url
+        )
         attachment = attachment_serialization_service.deserialize(attachment_bytes)
         request_message.attachments.append(attachment)
 

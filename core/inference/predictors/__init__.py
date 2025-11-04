@@ -2,6 +2,14 @@ from core.inference.predictors.box_based_object_segmenter import (
     BoxBasedObjectSegmenter,
     BoxBasedSegmentedObject,
 )
+from core.inference.predictors.impl.grounding_dino_object_detector import (
+    GroundingDinoObjectDetector,
+)
+from core.inference.predictors.impl.lama_image_inpainter import LamaImageInpainter
+from core.inference.predictors.impl.sam2_object_segmenter import Sam2ObjectSegmenter
+from core.inference.predictors.impl.two_stage_object_segmenter import (
+    TwoStageObjectSegmenter,
+)
 from core.inference.predictors.label_based_object_detector import (
     LabelBasedDetectedObject,
     LabelBasedObjectDetector,
@@ -27,6 +35,10 @@ from core.inference.predictors.sam_based_object_segmenter import (
 __all__ = [
     "BoxBasedObjectSegmenter",
     "BoxBasedSegmentedObject",
+    "GroundingDinoObjectDetector",
+    "LamaImageInpainter",
+    "Sam2ObjectSegmenter",
+    "TwoStageObjectSegmenter",
     "LabelBasedObjectDetector",
     "LabelBasedDetectedObject",
     "LabelBasedObjectSegmenter",

@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from PIL.Image import Image as PILImage
+from PIL import Image as PILImage
 
 from core.chat2edit.models.box import Box
 from core.chat2edit.models.image import Image

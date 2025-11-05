@@ -96,7 +96,7 @@ class Sam2ObjectSegmenter(
         objects = []
         mask_images, bboxes, scores = self._post_process_result(masks, scores)
         for mask_image, bbox, score in zip(mask_images, bboxes, scores):
-            object = BoxBasedSegmentedObject(mask=mask_image, bbox=bbox, score=score)
+            object = BoxBasedSegmentedObject(mask=mask_image, bbox=bbox, score=score, box=box)
             objects.append(object)
 
         return objects
@@ -122,7 +122,7 @@ class Sam2ObjectSegmenter(
         objects = []
         mask_images, bboxes, scores = self._post_process_result(masks, scores)
         for mask_image, bbox, score in zip(mask_images, bboxes, scores):
-            object = PointBasedSegmentedObject(mask=mask_image, bbox=bbox, score=score)
+            object = PointBasedSegmentedObject(mask=mask_image, bbox=bbox, score=score, positive_points=positive_points, negative_points=negative_points)
             objects.append(object)
 
         return objects

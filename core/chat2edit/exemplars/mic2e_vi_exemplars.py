@@ -26,11 +26,11 @@ MIC2E_VI_EXEMPLARS = [
                                 answers=[
                                     LlmMessage(
                                         text="""
-                                    thinking: Tôi cần trích xuất con chó trước khi có thể xóa nó khỏi ảnh
-                                    commands:
-                                    ```python
-                                    dogs = extract_objects_by_label(image, label='dog', expected_num_objects=1)
-                                    ```
+thinking: Tôi cần trích xuất con chó trước khi có thể xóa nó khỏi ảnh
+commands:
+```python
+dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
+```
                                     """,
                                     )
                                 ],
@@ -40,10 +40,10 @@ MIC2E_VI_EXEMPLARS = [
                             ExecutionBlock(
                                 is_executed=True,
                                 generated_code="""
-                            dogs = extract_objects_by_label(image, label='dog', expected_num_objects=1)
+dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
                             """,
                                 processed_code="""
-                            dogs = extract_objects_by_label(image, label='dog', expected_num_objects=1)
+dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
                             """,
                                 feedback=LabelBasedObjectExtractionQuantityMismatchFeedback(
                                     severity="error",
@@ -61,10 +61,10 @@ MIC2E_VI_EXEMPLARS = [
                                 answers=[
                                     LlmMessage(
                                         text="""
-                                thinking: Hàm extract_objects_by_label không thể tìm thấy con chó nào trong ảnh. Vì có hàm extract_object_by_sam, tôi có thể thử yêu cầu người dùng cung cấp khung chứa của con chó trong ảnh và sử dụng hàm extract_object_by_sam để trích xuất con chó từ ảnh
-                                commands:
-                                ```python
-                                respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
+thinking: Hàm extract_objects_by_label không thể tìm thấy con chó nào trong ảnh. Vì có hàm extract_object_by_sam, tôi có thể thử yêu cầu người dùng cung cấp khung chứa của con chó trong ảnh và sử dụng hàm extract_object_by_sam để trích xuất con chó từ ảnh
+commands:
+```python
+respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
                                 ```
                                 """
                                     ),
@@ -75,10 +75,10 @@ MIC2E_VI_EXEMPLARS = [
                             ExecutionBlock(
                                 is_executed=True,
                                 generated_code="""
-                            respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
+respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
                             """,
                                 processed_code="""
-                            respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
+respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
                             """,
                                 response=ContextualizedMessage(
                                     text="Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?",
@@ -92,7 +92,7 @@ MIC2E_VI_EXEMPLARS = [
             ChatCycle(
                 request=ContextualizedMessage(
                     text="Xóa con mèo trong @box_1 và con chim trong @box_2 khỏi ảnh",
-                    paths=["image_1"],
+                    paths=["image_0"],
                 ),
                 cycles=[
                     PromptCycle(
@@ -102,13 +102,13 @@ MIC2E_VI_EXEMPLARS = [
                                 answers=[
                                     LlmMessage(
                                         text="""
-                                    thinking: vì người dùng đã cung cấp khung chứa của con mèo và con chim, tôi cần trích xuất chúng khỏi ảnh rồi sau đó xóa chúng.
-                                    commands:
-                                    ```python
-                                    cat = extract_object_by_sam(image_1, box=box_1)
-                                    bird = extract_object_by_sam(image_1, box=box_2)
-                                    image_2 = remove_entities(image_1, [cat, bird])
-                                    respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_2])
+thinking: vì người dùng đã cung cấp khung chứa của con mèo và con chim, tôi cần trích xuất chúng khỏi ảnh rồi sau đó xóa chúng.
+commands:
+```python
+cat = extract_object_by_sam(image_0, box=box_1)
+bird = extract_object_by_sam(image_0, box=box_2)
+image_1 = remove_entities(image_0, [cat, bird])
+respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_1])
                                     ```
                                     """,
                                     )
@@ -119,20 +119,20 @@ MIC2E_VI_EXEMPLARS = [
                             ExecutionBlock(
                                 is_executed=True,
                                 generated_code="""
-                            cat = extract_object_by_sam(image_1, box=box_1)
-                            bird = extract_object_by_sam(image_1, box=box_2)
-                            image_2 = remove_entities(image_1, [cat, bird])
-                            respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_2])
+cat = extract_object_by_sam(image_0, box=box_1)
+bird = extract_object_by_sam(image_0, box=box_2)
+image_1 = remove_entities(image_0, [cat, bird])
+respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_1])
                             """,
                                 processed_code="""
-                            cat = extract_object_by_sam(image_1, box=box_1)
-                            bird = extract_object_by_sam(image_1, box=box_2)
-                            image_2 = remove_entities(image_1, [cat, bird])
-                            respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_2])
+cat = extract_object_by_sam(image_0, box=box_1)
+bird = extract_object_by_sam(image_0, box=box_2)
+image_1 = remove_entities(image_0, [cat, bird])
+respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_1])
                             """,
                                 response=ContextualizedMessage(
                                     text="Con mèo và con chim đã được xóa khỏi ảnh",
-                                    paths=["image_2"],
+                                    paths=["image_1"],
                                 ),
                             )
                         ],

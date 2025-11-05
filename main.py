@@ -11,7 +11,7 @@ from core.inference.manager import (
     shutdown_predictor_manager,
 )
 from routers import chat_router
-from core.inference.predictors import TwoStageObjectSegmenter
+from core.inference.predictors import LamaImageInpainter, TwoStageObjectSegmenter
 from core.inference.predictors import GroundingDinoObjectDetector
 from core.inference.predictors import Sam2ObjectSegmenter
 
@@ -34,6 +34,15 @@ async def lifespan(app: FastAPI):
         PredictorConfig(
             predictor_class=TwoStageObjectSegmenter,
             init_args={"detector": label_based_object_detector, "segmenter": box_based_object_segmenter},
+            pool_size=1,
+            device="cuda",
+            preload=False,
+        )
+    )
+    predictor_manager.register(
+        PredictorConfig(
+            predictor_class=LamaImageInpainter,
+            init_args={"model_path": "./resources/weights/big-lama.pt"},
             pool_size=1,
             device="cuda",
             preload=False,

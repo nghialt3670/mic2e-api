@@ -1,7 +1,8 @@
+import logging
 import os
 from typing import Union
 
-from chat2edit import Chat2Edit
+from chat2edit import Chat2Edit, Chat2EditCallbacks
 from chat2edit.context.providers import ContextProvider
 from chat2edit.context.strategies import ContextStrategy
 from chat2edit.prompting.llms import GoogleLlm, Llm, OpenAILlm
@@ -16,13 +17,21 @@ from schemas import ChatRequestModel, LlmConfig
 ContextValue = Union[Image, Object, Box, Point, Text, int, str, float, bool]
 
 
+logger = logging.getLogger(__name__)
+
 def get_chat2edit(request: ChatRequestModel = Body(...)) -> Chat2Edit:
+    callbacks = Chat2EditCallbacks(
+        on_answers=lambda answers: print(f"Answers: {answers}"),
+        on_blocks=lambda blocks: print(f"Blocks: {blocks}"),
+        on_execute=lambda block: print(f"Execute: {block}"),
+    )
     return Chat2Edit(
         llm=_get_llm(request.llm_config),
         context_provider=_get_context_provider(request.language),
         context_strategy=_get_context_strategy(),
         prompting_strategy=_get_prompting_strategy(),
         config=request.chat2edit_config,
+        callbacks=callbacks,
     )
 
 

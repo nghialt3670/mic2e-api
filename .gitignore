@@ -2,3 +2,5 @@ resources/weights
 __pycache__
 .venv
 .env
+logs
+test.*

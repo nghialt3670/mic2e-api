@@ -9,6 +9,7 @@ from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import MaskBasedImageInpainter
+from utils.image import convert_data_url_to_image
 
 
 async def inpaint_objects(image: Image, objects: List[Object]) -> Image:
@@ -54,9 +55,8 @@ def create_composite_mask(objects: List[Object]) -> PILImage:
         else:
             # If object doesn't have mask attribute, create one from src
             if hasattr(object, "src") and object.src:
-                object_mask = PILImage.frombytes(
-                    "L", (object.width, object.height), object.src.encode("utf-8")
-                )
+                object_image = convert_data_url_to_image(object.src)
+                object_mask = object_image.convert("RGBA").getchannel("A")
             else:
                 continue
 

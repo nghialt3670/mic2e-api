@@ -7,6 +7,6 @@ from core.chat2edit.models import Image, Object
 
 
 @respond
-@feedback_invalid_parameter_type
+# @feedback_invalid_parameter_type
 def respond_to_user(text: str, attachments: List[Union[Image, Object]] = []) -> str:
     return ChatMessage(text=text, attachments=attachments)

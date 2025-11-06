@@ -31,7 +31,7 @@ commands:
 ```python
 dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
 ```
-                                    """,
+""".strip(),
                                     )
                                 ],
                             ),
@@ -41,10 +41,10 @@ dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
                                 is_executed=True,
                                 generated_code="""
 dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
-                            """,
+""".strip(),
                                 processed_code="""
 dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
-                            """,
+""".strip(),
                                 feedback=LabelBasedObjectExtractionQuantityMismatchFeedback(
                                     severity="error",
                                     label="dog",
@@ -66,7 +66,7 @@ commands:
 ```python
 respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
                                 ```
-                                """
+""".strip(),
                                     ),
                                 ],
                             ),
@@ -76,10 +76,10 @@ respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. B
                                 is_executed=True,
                                 generated_code="""
 respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
-                            """,
+""".strip(),
                                 processed_code="""
 respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?')
-                            """,
+""".strip(),
                                 response=ContextualizedMessage(
                                     text="Tôi không thể tìm thấy con chó nào trong ảnh. Bạn có thể cung cấp cho tôi khung chứa của con chó trong ảnh không?",
                                     paths=["image_0"],
@@ -89,6 +89,10 @@ respond_to_user(text='Tôi không thể tìm thấy con chó nào trong ảnh. B
                     ),
                 ],
             ),
+        ]
+    ),
+    Exemplar(
+        cycles=[
             ChatCycle(
                 request=ContextualizedMessage(
                     text="Xóa con mèo trong @box_1 và con chim trong @box_2 khỏi ảnh",
@@ -110,7 +114,7 @@ bird = extract_object_by_sam(image_0, box=box_2)
 image_1 = remove_entities(image_0, [cat, bird])
 respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_1])
                                     ```
-                                    """,
+""".strip(),
                                     )
                                 ],
                             ),
@@ -123,13 +127,13 @@ cat = extract_object_by_sam(image_0, box=box_1)
 bird = extract_object_by_sam(image_0, box=box_2)
 image_1 = remove_entities(image_0, [cat, bird])
 respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_1])
-                            """,
+""".strip(),
                                 processed_code="""
 cat = extract_object_by_sam(image_0, box=box_1)
 bird = extract_object_by_sam(image_0, box=box_2)
 image_1 = remove_entities(image_0, [cat, bird])
 respond_to_user(text='Con mèo và con chim đã được xóa khỏi ảnh', paths=[image_1])
-                            """,
+""".strip(),
                                 response=ContextualizedMessage(
                                     text="Con mèo và con chim đã được xóa khỏi ảnh",
                                     paths=["image_1"],

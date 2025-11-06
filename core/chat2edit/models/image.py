@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from PIL.Image import Image as PILImage
 from pydantic import Field
@@ -11,6 +11,7 @@ from utils.image import convert_data_url_to_image, convert_image_to_data_url
 
 
 class Image(FabricGroup, Referent):
+    src: Optional[str] = Field(default=None, description="Image source URL or data")
     filename: str = Field(
         default_factory=create_image_filename, description="Image filename"
     )
@@ -22,7 +23,7 @@ class Image(FabricGroup, Referent):
         return Image(objects=[base_image])
 
     def set_image(self, image: PILImage) -> None:
-        if not len(self.objects) == 0 or not isinstance(self.objects[0], FabricImage):
+        if len(self.objects) == 0 or not isinstance(self.objects[0], FabricImage):
             raise ValueError("No base image found")
 
         self.objects[0].src = convert_image_to_data_url(image)

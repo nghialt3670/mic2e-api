@@ -31,7 +31,7 @@ commands:
 ```python
 dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
 ```
-""",
+""".strip(),
                                     )
                                 ],
                             ),
@@ -41,10 +41,10 @@ dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
                                 is_executed=True,
                                 generated_code="""
 dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
-""",
+""".strip(),
                                 processed_code="""
 dogs = extract_objects_by_label(image_0, label='dog', expected_num_objects=1)
-""",
+""".strip(),
                                 feedback=LabelBasedObjectExtractionQuantityMismatchFeedback(
                                     severity="error",
                                     label="dog",
@@ -66,7 +66,7 @@ commands:
 ```python
 respond_to_user(text='I can't find any dogs in the image. Can you please provide me the bounding box of the dog in the image?')
 ```
-"""
+""".strip(),
                                     ),
                                 ],
                             ),
@@ -76,10 +76,10 @@ respond_to_user(text='I can't find any dogs in the image. Can you please provide
                                 is_executed=True,
                                 generated_code="""
 respond_to_user(text='I can't find any dogs in the image. Can you please provide me the bounding box of the dog in the image?')
-""",
+""".strip(),
                                 processed_code="""
 respond_to_user(text='I can't find any dogs in the image. Can you please provide me the bounding box of the dog in the image?')
-""",
+""".strip(),
                                 response=ContextualizedMessage(
                                     text="I can't find any dogs in the image. Can you please provide me the bounding box of the dog in the image?",
                                     paths=["image_0"],
@@ -89,6 +89,10 @@ respond_to_user(text='I can't find any dogs in the image. Can you please provide
                     ),
                 ],
             ),
+        ]
+    ),
+    Exemplar(
+        cycles=[
             ChatCycle(
                 request=ContextualizedMessage(
                     text="Remove the cat in @box_1 and the bird in @box_2 from the image",
@@ -108,9 +112,9 @@ commands:
 cat = extract_object_by_sam(image_0, box=box_1)
 bird = extract_object_by_sam(image_0, box=box_2)
 image_1 = remove_entities(image_0, [cat, bird])
-respond_to_user(text='The cat and the bird have been removed from the image', paths=[image_1])
+respond_to_user(text='The cat and the bird have been removed from the image', attachments=[image_1])
 ```
-""",
+""".strip(),
                                     )
                                 ],
                             ),
@@ -122,14 +126,14 @@ respond_to_user(text='The cat and the bird have been removed from the image', pa
 cat = extract_object_by_sam(image_0, box=box_1)
 bird = extract_object_by_sam(image_0, box=box_2)
 image_1 = remove_entities(image_0, [cat, bird])
-respond_to_user(text='The cat and the bird have been removed from the image', paths=[image_1])
-""",
+respond_to_user(text='The cat and the bird have been removed from the image', attachments=[image_1])
+""".strip(),
                                 processed_code="""
 cat = extract_object_by_sam(image_0, box=box_1)
 bird = extract_object_by_sam(image_0, box=box_2)
 image_1 = remove_entities(image_0, [cat, bird])
-respond_to_user(text='The cat and the bird have been removed from the image', paths=[image_1])
-""",
+respond_to_user(text='The cat and the bird have been removed from the image', attachments=[image_1])
+""".strip(),
                                 response=ContextualizedMessage(
                                     text="The cat and the bird have been removed from the image",
                                     paths=["image_1"],

@@ -1,10 +1,12 @@
 import logging
 import os
-from typing import Union
+from datetime import datetime
+from typing import List, Union
 
 from chat2edit import Chat2Edit, Chat2EditCallbacks
 from chat2edit.context.providers import ContextProvider
 from chat2edit.context.strategies import ContextStrategy
+from chat2edit.models import ExecutionBlock, LlmMessage
 from chat2edit.prompting.llms import GoogleLlm, Llm, OpenAILlm
 from chat2edit.prompting.strategies import PromptingStrategy
 from fastapi import Body
@@ -18,12 +20,30 @@ ContextValue = Union[Image, Object, Box, Point, Text, int, str, float, bool]
 
 
 logger = logging.getLogger(__name__)
+def write_prompt(prompt: LlmMessage) -> None:
+    with open(f"logs/prompt_{datetime.now().strftime('%Y%m%d%H%M%S')}.txt", "w") as f:
+        f.write(prompt.text)
+
+def write_answers(answers: List[LlmMessage]) -> None:
+    answer_text = "\n\n".join([answer.text for answer in answers])
+    with open(f"logs/answers_{datetime.now().strftime('%Y%m%d%H%M%S')}.txt", "w") as f:
+        f.write(answer_text)
+
+def write_blocks(blocks: List[ExecutionBlock]) -> None:
+    block_text = "\n\n".join([block.model_dump_json(indent=4) for block in blocks])
+    with open(f"logs/blocks_{datetime.now().strftime('%Y%m%d%H%M%S')}.txt", "w") as f:
+        f.write(block_text)
+
+def write_block(block: ExecutionBlock) -> None:
+    with open(f"logs/block_{datetime.now().strftime('%Y%m%d%H%M%S')}.txt", "w") as f:
+        f.write(block.model_dump_json(indent=4))
 
 def get_chat2edit(request: ChatRequestModel = Body(...)) -> Chat2Edit:
     callbacks = Chat2EditCallbacks(
-        on_answers=lambda answers: print(f"Answers: {answers}"),
-        on_blocks=lambda blocks: print(f"Blocks: {blocks}"),
-        on_execute=lambda block: print(f"Execute: {block}"),
+        on_prompt=lambda prompt: write_prompt(prompt),
+        on_answers=lambda answers: write_answers(answers),
+        on_blocks=lambda blocks: write_blocks(blocks),
+        on_execute=lambda block: write_block(block),
     )
     return Chat2Edit(
         llm=_get_llm(request.llm_config),

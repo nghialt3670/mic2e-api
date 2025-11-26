@@ -52,13 +52,5 @@ def convert_data_url_to_image(data_url: str) -> Image.Image:
     if not match:
         raise ValueError("Invalid data URL")
 
-    with open("data_url.txt", "w") as f:
-        f.write(data_url)
-
-    with open("data_url_group_1.txt", "w") as f:
-        f.write(match.group(1))
-    with open("data_url_group_2.txt", "w") as f:
-        f.write(match.group(2))
-
     image_data = base64.b64decode(match.group(2))
     return Image.open(io.BytesIO(image_data))

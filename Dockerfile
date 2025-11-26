@@ -12,13 +12,22 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PyTorch CPU version first
-# RUN pip install --no-cache-dir torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cpu
+# Install PyTorch CPU wheels first to avoid pulling huge CUDA builds
+ARG TORCH_VERSION=2.4.0
+ARG TORCHVISION_VERSION=0.19.0
+ARG TORCHAUDIO_VERSION=2.4.0
+ARG PYTORCH_INDEX_URL=https://download.pytorch.org/whl/cpu
+
+RUN pip install --no-cache-dir \
+    torch==${TORCH_VERSION} \
+    torchvision==${TORCHVISION_VERSION} \
+    torchaudio==${TORCHAUDIO_VERSION} \
+    --extra-index-url ${PYTORCH_INDEX_URL}
 
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies
+# Install Python dependencies (now that torch deps are satisfied)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code

@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
             predictor_class=TwoStageObjectSegmenter,
             init_args={"detector": label_based_object_detector, "segmenter": box_based_object_segmenter},
             pool_size=1,
-            device="cuda",
+            device="cpu",
             preload=False,
         )
     )
@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI):
             predictor_class=LamaImageInpainter,
             init_args={"model_path": "./resources/weights/big-lama.pt"},
             pool_size=1,
-            device="cuda",
+            device="cpu",
             preload=False,
         )
     )

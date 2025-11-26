@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/*.txt
+logs/*.json
+!logs/.gitkeep
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Documentation
+*.md
+README.md
+
+# Notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Test files
+test_*.py
+*_test.py
+tests/
+
+# GitHub
+.github/
+
+# OS
+.DS_Store
+Thumbs.db
+

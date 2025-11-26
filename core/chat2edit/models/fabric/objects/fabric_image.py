@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import Field
 
@@ -9,7 +9,7 @@ from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
 class FabricImage(FabricObject):
     """Image object in Fabric.js."""
 
-    type: str = Field(default="Image", description="Object type")
+    type: Literal["Image"] = Field(default="Image", description="Object type")
 
     # Image source
     src: str = Field(default="", description="Image source URL or data")

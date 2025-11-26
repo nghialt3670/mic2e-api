@@ -63,13 +63,11 @@ async def chat(
     context_url = await context_storage_service.upload(context_bytes, context_path)
 
     if not response_message:
-        return (
-            ResponseModel(
-                data=ChatResponseModel(
-                    cycle=cycle,
-                    context_url=context_url,
-                )
-            ),
+        return ResponseModel(
+            data=ChatResponseModel(
+                cycle=cycle,
+                context_url=context_url,
+            )
         )
 
     response_message_model = MessageModel(

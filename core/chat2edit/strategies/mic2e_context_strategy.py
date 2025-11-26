@@ -13,6 +13,7 @@ from chat2edit.models import (
 from pydantic import TypeAdapter
 
 from core.chat2edit.models import Box, Image, Object, Point, Text
+from core.chat2edit.models.fabric.objects import FabricRect, FabricText
 
 CONTEXT_VALUE_BASE_TYPE = Union[Image, Object, Box, Point, Text, int, str, float, bool]
 CONTEXT_TYPE = Dict[str, Union[CONTEXT_VALUE_BASE_TYPE, List[CONTEXT_VALUE_BASE_TYPE]]]
@@ -36,54 +37,120 @@ class Mic2eContextStrategy(ContextStrategy):
     def contextualize_message(
         self, message: ChatMessage, context: Dict[str, Any]
     ) -> ContextualizedMessage:
-        reference_list = re.findall(r"@(\w+)", message.text)
-        reference_set = set(reference_list)
 
-        if len(reference_set) != len(reference_list):
-            raise ValueError("References must be unique")
+        # -----------------------------
+        # 1. Parse NEW format: #color[label](value@figId)
+        # -----------------------------
+        ref_pattern = r"#([a-zA-Z0-9_]+)\[([^\]]+)\]\(([^@]+)@([^)]+)\)"
+        matches = re.findall(ref_pattern, message.text)
 
-        has_references = len(reference_set) > 0
+        reference_map = {}        # UUID → variable_name
+        reference_objects = {}    # UUID → metadata
+
+        # -----------------------------
+        # 2. Build reference variables
+        # -----------------------------
+        for color, label, value, fig_id in matches:
+            uuid_prefix = value.split("-")[0] if "-" in value else value[:8]
+            variable_name = f"@{label}_{uuid_prefix}"
+
+            if variable_name in reference_map.values():
+                raise ValueError(f"Duplicate variable name: {variable_name}")
+
+            reference_map[value] = variable_name
+            reference_objects[value] = {
+                "label": label,
+                "color": color,
+                "fig_id": fig_id,
+                "variable_name": variable_name,
+            }
+
+        # -----------------------------
+        # 3. Replace references in text
+        # -----------------------------
+        contextualized_text = message.text
+        for color, label, value, fig_id in matches:
+            original = f"#{color}[{label}]({value}@{fig_id})"
+            contextualized_text = contextualized_text.replace(
+                original, reference_map[value]
+            )
+
+        # -----------------------------
+        # 4. Process attachments & objects
+        # -----------------------------
         paths = []
 
         for attachment in message.attachments:
             if not isinstance(attachment, Image):
                 raise ValueError("Attachments must be Image")
 
-            if has_references:
-                for obj in attachment.objects:
-                    if (
-                        not isinstance(obj, (Image, Object, Point, Box, Text))
-                        or not obj.reference
-                        or obj.reference not in reference_set
-                    ):
-                        continue
+            # Frame references: label == image
+            for uuid_value, ref_data in reference_objects.items():
+                if (
+                    ref_data["label"] == "image"
+                    and ref_data["fig_id"] == attachment.id
+                ):
+                    variable_name = ref_data["variable_name"]
 
-                    if obj.reference in context:
-                        raise ValueError(
-                            f"Reference {obj.reference} already exists in context"
-                        )
+                    if variable_name in context:
+                        raise ValueError(f"Reference {variable_name} already exists")
 
-                    context[obj.reference] = Attachment(obj)
-                    reference_set.remove(obj.reference)
-                    paths.append(obj.reference)
+                    context[variable_name] = Attachment(attachment)
+                    paths.append(variable_name)
+                    reference_objects[uuid_value]["processed"] = True
 
-                    if obj.is_ephemeral:
+            # Object references: point, box, text, scribble
+            for obj in attachment.objects:
+                normalized_obj = self._normalize_attachment_object(obj)
+                if normalized_obj is None:
+                    continue
+
+                obj_id = getattr(normalized_obj, "id", None)
+                if obj_id and obj_id in reference_map:
+                    variable_name = reference_map[obj_id]
+
+                    if variable_name in context:
+                        raise ValueError(f"Reference {variable_name} already exists")
+
+                    context[variable_name] = Attachment(normalized_obj)
+                    paths.append(variable_name)
+                    reference_objects[obj_id]["processed"] = True
+
+                    if getattr(normalized_obj, "is_ephemeral", False):
                         attachment.remove_object(obj)
 
-            if attachment.reference:
-                if attachment.reference in context:
-                    raise ValueError(
-                        f"Reference {attachment.reference} already exists in context"
-                    )
+            # If this attachment was *not* referenced, create image_i
+            attachment_was_referenced = any(
+                ref.get("processed") and ref["label"] == "image"
+                for ref in reference_objects.values()
+            )
 
-                context[attachment.reference] = Attachment(attachment)
-                paths.append(attachment.reference)
-            else:
+            if not attachment_was_referenced:
                 variable_name = self._get_image_variable_name(context)
                 context[variable_name] = Attachment(attachment)
                 paths.append(variable_name)
 
-        return ContextualizedMessage(text=message.text, paths=paths)
+        # -----------------------------
+        # 5. Verify all references were matched
+        # -----------------------------
+        unprocessed_refs = [
+            ref_data["variable_name"]
+            for ref_data in reference_objects.values()
+            if not ref_data.get("processed")
+        ]
+
+        if unprocessed_refs:
+            raise ValueError(
+                f"Unmatched references: {', '.join(unprocessed_refs)}"
+            )
+
+        print(contextualized_text)
+        print(message.text)
+
+        return ContextualizedMessage(
+            text=contextualized_text,
+            paths=paths
+        )
 
     def contextualize_feedback(
         self, feedback: ExecutionFeedback, context: Dict[str, Any]
@@ -109,3 +176,18 @@ class Mic2eContextStrategy(ContextStrategy):
                 return variable_name
 
         raise RuntimeError("Too many images in context")
+
+    def _normalize_attachment_object(
+        self, obj: Any
+    ) -> Union[Image, Object, Point, Box, Text, None]:
+        """Convert raw Fabric objects into their referent-aware counterparts."""
+        if isinstance(obj, (Image, Object, Point, Box, Text)):
+            return obj
+
+        if isinstance(obj, FabricRect):
+            return Box.model_validate(obj.model_dump())
+
+        if isinstance(obj, FabricText):
+            return Text.model_validate(obj.model_dump())
+
+        return None

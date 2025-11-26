@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 
 from pydantic import Field
 
@@ -8,7 +8,7 @@ from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
 class FabricText(FabricObject):
     """Text object in Fabric.js."""
 
-    type: str = Field(default="Text", description="Object type")
+    type: Literal["Text"] = Field(default="Text", description="Object type")
 
     # Text content
     text: str = Field(default="Hello, world!", description="Text content")

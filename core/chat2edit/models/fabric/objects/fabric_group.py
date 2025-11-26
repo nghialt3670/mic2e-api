@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Annotated, ClassVar, List, Union
 
 from pydantic import BaseModel, Field
 
@@ -32,7 +32,12 @@ class FabricGroup(FabricObject):
     )
 
     # Child objects
-    objects: List[Union[FabricImage, FabricRect, FabricText]] = Field(
+    FabricChild: ClassVar = Annotated[
+        Union[FabricImage, FabricRect, FabricText],
+        Field(discriminator="type"),
+    ]
+
+    objects: List[FabricChild] = Field(
         default_factory=list, description="Child objects in the group"
     )
 

@@ -44,7 +44,7 @@ class Mic2eContextStrategy(ContextStrategy):
         ref_pattern = r"#([a-zA-Z0-9_]+)\[([^\]]+)\]\(([^@]+)@([^)]+)\)"
         matches = re.findall(ref_pattern, message.text)
 
-        reference_map = {}        # UUID → variable_name
+        reference_map = {}        # UUID → python-safe variable_name
         reference_objects = {}    # UUID → metadata
 
         # -----------------------------
@@ -52,7 +52,8 @@ class Mic2eContextStrategy(ContextStrategy):
         # -----------------------------
         for color, label, value, fig_id in matches:
             uuid_prefix = value.split("-")[0] if "-" in value else value[:8]
-            variable_name = f"@{label}_{uuid_prefix}"
+            variable_name = f"{label}_{uuid_prefix}"
+            display_name = f"@{variable_name}"
 
             if variable_name in reference_map.values():
                 raise ValueError(f"Duplicate variable name: {variable_name}")
@@ -63,6 +64,7 @@ class Mic2eContextStrategy(ContextStrategy):
                 "color": color,
                 "fig_id": fig_id,
                 "variable_name": variable_name,
+                "display_name": display_name,
             }
 
         # -----------------------------
@@ -71,9 +73,8 @@ class Mic2eContextStrategy(ContextStrategy):
         contextualized_text = message.text
         for color, label, value, fig_id in matches:
             original = f"#{color}[{label}]({value}@{fig_id})"
-            contextualized_text = contextualized_text.replace(
-                original, reference_map[value]
-            )
+            display_name = reference_objects[value]["display_name"]
+            contextualized_text = contextualized_text.replace(original, display_name)
 
         # -----------------------------
         # 4. Process attachments & objects
@@ -140,9 +141,12 @@ class Mic2eContextStrategy(ContextStrategy):
         ]
 
         if unprocessed_refs:
-            raise ValueError(
-                f"Unmatched references: {', '.join(unprocessed_refs)}"
-            )
+            display_names = [
+                ref_data["display_name"]
+                for ref_data in reference_objects.values()
+                if ref_data["variable_name"] in unprocessed_refs
+            ]
+            raise ValueError(f"Unmatched references: {', '.join(display_names)}")
 
         print(contextualized_text)
         print(message.text)

@@ -1,20 +1,19 @@
 from fastapi import Depends
-from supabase._async.client import AsyncClient
 
-from clients import create_supabase_async_client
-from constants import SUPABASE_CONTEXT_BUCKET
+from clients import get_mongo_database
+from constants import CONTEXT_BUCKET, STORAGE_PUBLIC_BASE_URL
 from services.context_serialization_service import ContextSerializationService
 from services.impl.fabric_context_serialization_service import (
     FabricContextSerializationService,
 )
-from services.impl.supabase_storage_service import SupabaseStorageService
+from services.impl.mongo_storage_service import MongoStorageService
 from services.storage_service import StorageService
 
 
-async def get_context_storage_service(
-    client: AsyncClient = Depends(create_supabase_async_client),
+def get_context_storage_service(
+    database=Depends(get_mongo_database),
 ) -> StorageService:
-    return SupabaseStorageService(client, SUPABASE_CONTEXT_BUCKET)
+    return MongoStorageService(database, CONTEXT_BUCKET, STORAGE_PUBLIC_BASE_URL)
 
 
 async def get_context_serialization_service() -> ContextSerializationService:

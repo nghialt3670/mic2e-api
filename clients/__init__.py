@@ -1,3 +1,3 @@
-from .supabase_client import create_supabase_async_client, supabase_client
+from .mongo_client import get_mongo_client, get_mongo_database
 
-__all__ = ["supabase_client", "create_supabase_async_client"]
+__all__ = ["get_mongo_client", "get_mongo_database"]

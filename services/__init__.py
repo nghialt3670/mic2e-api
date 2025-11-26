@@ -6,7 +6,7 @@ from services.impl.fabric_attachment_serialization_service import (
 from services.impl.fabric_context_serialization_service import (
     FabricContextSerializationService,
 )
-from services.impl.supabase_storage_service import SupabaseStorageService
+from services.impl.mongo_storage_service import MongoStorageService
 from services.storage_service import StorageService
 
 __all__ = [
@@ -14,6 +14,6 @@ __all__ = [
     "ContextSerializationService",
     "FabricAttachmentSerializationService",
     "FabricContextSerializationService",
-    "SupabaseStorageService",
+    "MongoStorageService",
     "StorageService",
 ]

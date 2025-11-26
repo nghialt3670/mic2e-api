@@ -1,2 +1,0 @@
-SUPABASE_CONTEXT_BUCKET = "contexts"
-SUPABASE_ATTACHMENT_BUCKET = "attachments"

@@ -10,7 +10,7 @@ from core.inference.manager import (
     get_predictor_manager,
     shutdown_predictor_manager,
 )
-from routers import chat_router
+from routers import chat_router, storage_router
 from core.inference.predictors import LamaImageInpainter, TwoStageObjectSegmenter
 from core.inference.predictors import GroundingDinoObjectDetector
 from core.inference.predictors import Sam2ObjectSegmenter
@@ -78,6 +78,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(chat_router, prefix="/api/v1", tags=["chat"])
+app.include_router(storage_router, prefix="/api/v1", tags=["storage"])
 
 
 @app.get("/")

@@ -27,6 +27,7 @@ async def extract_object_by_sam(
     box_coords, mask_image, positive_points, negative_points = (
         create_sam_input_parameters(box, mask, points)
     )
+
     async with get_predictor_manager().get_predictor(
         SamBasedObjectSegmenter
     ) as segmenter:
@@ -38,9 +39,9 @@ async def extract_object_by_sam(
             negative_points=negative_points,
         )
 
-    object = create_object_from_sam_based_segmented_object(segmented_objects[0])
-    image.add_object(object)
-    return object
+    obj = create_object_from_sam_based_segmented_object(segmented_objects[0])
+    image.add_object(obj)
+    return obj
 
 
 def create_sam_input_parameters(
@@ -63,10 +64,13 @@ def create_sam_input_parameters(
         if box is not None
         else None
     )
+
     mask_image = mask.get_image() if mask is not None else None
+
     positive_points, negative_points = create_negative_and_positive_points_from_points(
-        points
+        points or []
     )
+
     return box_coords, mask_image, positive_points, negative_points
 
 
@@ -78,6 +82,7 @@ def create_negative_and_positive_points_from_points(
 
     for point in points:
         point_coords = (int(point.left), int(point.top))
+
         if point.segment_type == "include":
             positive_points.append(point_coords)
         elif point.segment_type == "exclude":
@@ -89,17 +94,22 @@ def create_negative_and_positive_points_from_points(
 def create_object_from_sam_based_segmented_object(
     segmented_object: SamBasedSegmentedObject,
 ) -> Object:
-    object = Object()
-    object.src = convert_image_to_data_url(segmented_object.mask)
-    object.width = segmented_object.mask.width
-    object.height = segmented_object.mask.height
-    object.left = segmented_object.bbox[0]
-    object.top = segmented_object.bbox[1]
-    object.points_to_score[
-        segmented_object.positive_points, segmented_object.negative_points
-    ] = segmented_object.score
-    object.box_to_score[segmented_object.box] = segmented_object.score
-    object.mask_to_score[convert_image_to_data_url(segmented_object.input_mask)] = (
-        segmented_object.score
-    )
-    return object
+    obj = Object()
+    obj.src = convert_image_to_data_url(segmented_object.mask)
+    obj.width = segmented_object.mask.width
+    obj.height = segmented_object.mask.height
+    obj.left = segmented_object.bbox[0]
+    obj.top = segmented_object.bbox[1]
+
+    positive_tuple = tuple(segmented_object.positive_points or [])
+    negative_tuple = tuple(segmented_object.negative_points or [])
+
+    obj.points_to_score[(positive_tuple, negative_tuple)] = segmented_object.score
+    obj.box_to_score[tuple(segmented_object.box)] = segmented_object.score
+
+    if segmented_object.input_mask is not None:
+        obj.mask_to_score[
+            convert_image_to_data_url(segmented_object.input_mask)
+        ] = segmented_object.score
+
+    return obj

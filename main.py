@@ -11,9 +11,12 @@ from core.inference.manager import (
     shutdown_predictor_manager,
 )
 from routers import chat_router, storage_router
-from core.inference.predictors import LamaImageInpainter, TwoStageObjectSegmenter
-from core.inference.predictors import GroundingDinoObjectDetector
-from core.inference.predictors import Sam2ObjectSegmenter
+from core.inference.predictors import (
+    GroundingDinoObjectDetector,
+    LamaImageInpainter,
+    Sam2ObjectSegmenter,
+    TwoStageObjectSegmenter,
+)
 
 
 @asynccontextmanager
@@ -22,32 +25,51 @@ async def lifespan(app: FastAPI):
     # Startup
     print("Starting MIC2E API...")
     predictor_manager = get_predictor_manager()
+
+    sam2_segmenter = Sam2ObjectSegmenter(
+        checkpoint_path="./resources/weights/sam2.1_hiera_large.pt",
+        config_path="./config/sam2.1_hiera_1.yaml",
+    )
+
+    predictor_manager.register(
+        PredictorConfig(
+            predictor_class=Sam2ObjectSegmenter,
+            init_args={},  # instance already created above
+            pool_size=1,
+            device="cpu",
+            preload=False,
+            instance=sam2_segmenter,
+        )
+    )
+
     label_based_object_detector = GroundingDinoObjectDetector(
         checkpoint_path="./resources/weights/groundingdino_swint_ogc.pth",
         config_path="./config/GroundingDINO_SwinT_OGC.py",
     )
-    box_based_object_segmenter = Sam2ObjectSegmenter(
-        checkpoint_path="./resources/weights/sam2.1_hiera_large.pt",
-        config_path="./config/sam2.1_hiera_1.yaml",
-    )
+
     predictor_manager.register(
         PredictorConfig(
             predictor_class=TwoStageObjectSegmenter,
-            init_args={"detector": label_based_object_detector, "segmenter": box_based_object_segmenter},
+            init_args={
+                "detector": label_based_object_detector,
+                "segmenter": sam2_segmenter,
+            },
             pool_size=1,
             device="cpu",
             preload=False,
         )
     )
+
     predictor_manager.register(
         PredictorConfig(
             predictor_class=LamaImageInpainter,
             init_args={"model_path": "./resources/weights/big-lama.pt"},
             pool_size=1,
-            device="cpu",
+            device="cuda",
             preload=False,
         )
     )
+
     await predictor_manager.initialize()
     print("Predictor manager initialized successfully")
 

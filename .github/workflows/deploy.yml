@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_IMAGE: letinnghia/mic2e-api
+  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/mic2e-api
   DOCKER_TAG: latest
 
 jobs:

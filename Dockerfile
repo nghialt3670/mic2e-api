@@ -1,5 +1,5 @@
 # Use PyTorch's CPU image so torch is preinstalled
-FROM pytorch/pytorch:2.4.0-cpu
+FROM pytorch/pytorch:latest
 
 # Set working directory
 WORKDIR /app

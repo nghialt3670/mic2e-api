@@ -2,8 +2,10 @@ from typing import Annotated, ClassVar, List, Union
 
 from pydantic import BaseModel, Field
 
+from core.chat2edit.models.fabric.objects.fabric_circle import FabricCircle
 from core.chat2edit.models.fabric.objects.fabric_image import FabricImage
 from core.chat2edit.models.fabric.objects.fabric_object import FabricObject
+from core.chat2edit.models.fabric.objects.fabric_path import FabricPath
 from core.chat2edit.models.fabric.objects.fabric_rect import FabricRect
 from core.chat2edit.models.fabric.objects.fabric_text import FabricText
 
@@ -33,7 +35,13 @@ class FabricGroup(FabricObject):
 
     # Child objects
     FabricChild: ClassVar = Annotated[
-        Union[FabricImage, FabricRect, FabricText],
+        Union[
+            FabricCircle,
+            FabricImage,
+            FabricPath,
+            FabricRect,
+            FabricText,
+        ],
         Field(discriminator="type"),
     ]
 

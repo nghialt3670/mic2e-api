@@ -12,7 +12,7 @@ from chat2edit.models import (
 )
 from pydantic import TypeAdapter
 
-from core.chat2edit.models import Box, Image, Object, Point, Text
+from core.chat2edit.models import Box, Image, Object, Point, Scribble, Text
 from core.chat2edit.models.fabric.objects import FabricRect, FabricText
 
 CONTEXT_VALUE_BASE_TYPE = Union[Image, Object, Box, Point, Text, int, str, float, bool]
@@ -183,15 +183,35 @@ class Mic2eContextStrategy(ContextStrategy):
 
     def _normalize_attachment_object(
         self, obj: Any
-    ) -> Union[Image, Object, Point, Box, Text, None]:
+    ) -> Union[Image, Object, Point, Box, Text, Scribble, None]:
         """Convert raw Fabric objects into their referent-aware counterparts."""
-        if isinstance(obj, (Image, Object, Point, Box, Text)):
+        if isinstance(obj, (Image, Object, Point, Box, Text, Scribble)):
             return obj
 
+        # Get is_ephemeral from the original object if it exists
+        is_ephemeral = getattr(obj, "is_ephemeral", False)
+
         if isinstance(obj, FabricRect):
-            return Box.model_validate(obj.model_dump())
+            box_data = obj.model_dump()
+            box_data["is_ephemeral"] = is_ephemeral
+            return Box.model_validate(box_data)
 
         if isinstance(obj, FabricText):
-            return Text.model_validate(obj.model_dump())
+            text_data = obj.model_dump()
+            text_data["is_ephemeral"] = is_ephemeral
+            return Text.model_validate(text_data)
+
+        # Handle FabricCircle (Point) and FabricPath (Scribble)
+        from core.chat2edit.models.fabric.objects import FabricCircle, FabricPath
+
+        if isinstance(obj, FabricCircle):
+            circle_data = obj.model_dump()
+            circle_data["is_ephemeral"] = is_ephemeral
+            return Point.model_validate(circle_data)
+
+        if isinstance(obj, FabricPath):
+            path_data = obj.model_dump()
+            path_data["is_ephemeral"] = is_ephemeral
+            return Scribble.model_validate(path_data)
 
         return None

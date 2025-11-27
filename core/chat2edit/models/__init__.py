@@ -2,6 +2,7 @@ from core.chat2edit.models.box import Box
 from core.chat2edit.models.image import Image
 from core.chat2edit.models.object import Object
 from core.chat2edit.models.point import Point
+from core.chat2edit.models.scribble import Scribble
 from core.chat2edit.models.text import Text
 
 __all__ = [
@@ -9,5 +10,6 @@ __all__ = [
     "Image",
     "Object",
     "Point",
+    "Scribble",
     "Text",
 ]

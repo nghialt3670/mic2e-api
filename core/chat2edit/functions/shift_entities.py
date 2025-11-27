@@ -13,8 +13,8 @@ from core.chat2edit.models import Box, Image, Object, Point, Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
 
 
-@deepcopy_parameter("image")
 @feedback_ignored_return_value
+@deepcopy_parameter("image")
 @feedback_invalid_parameter_type
 @feedback_empty_list_parameters(["entities"])
 @feedback_mismatch_list_parameters(["entities", "offsets"])

@@ -148,9 +148,6 @@ class Mic2eContextStrategy(ContextStrategy):
             ]
             raise ValueError(f"Unmatched references: {', '.join(display_names)}")
 
-        print(contextualized_text)
-        print(message.text)
-
         return ContextualizedMessage(
             text=contextualized_text,
             paths=paths

@@ -53,6 +53,7 @@ async def chat(
     if request.context_url:
         context_bytes = await context_storage_service.download(request.context_url)
         context = context_serialization_service.deserialize(context_bytes)
+        print(context)
 
     response_message, cycle, updated_context = await chat2edit.generate(
         request_message, request.history, context

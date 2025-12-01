@@ -98,9 +98,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(chat_router, prefix="/api/v1", tags=["chat"])
-app.include_router(storage_router, prefix="/api/v1", tags=["storage"])
+# Include routers without API version prefix (handled by external routing/proxy)
+app.include_router(chat_router, tags=["chat"])
+app.include_router(storage_router, tags=["storage"])
 
 
 @app.get("/")

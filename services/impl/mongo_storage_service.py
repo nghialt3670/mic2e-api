@@ -18,7 +18,8 @@ class MongoStorageService(StorageService):
         self._collection = database[bucket]
         self._bucket = bucket
         self._public_base_url = public_base_url.rstrip("/")
-        self._route_prefix = f"/api/v1/storage/{self._bucket}/"
+        # Route prefix is now versionless; external routing/proxy should handle API versioning
+        self._route_prefix = f"/storage/{self._bucket}/"
 
     async def upload(self, data: bytes, path: str) -> str:
         if not path:

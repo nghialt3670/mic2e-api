@@ -1,19 +1,29 @@
-from typing import List, Optional
+from typing import Annotated, ClassVar, List, Optional, Union
 
 from PIL.Image import Image as PILImage
 from pydantic import Field
 
 from core.chat2edit.models.fabric.filters import FabricFilter
 from core.chat2edit.models.fabric.objects import FabricGroup, FabricImage, FabricObject
+from core.chat2edit.models.box import Box
+from core.chat2edit.models.object import Object
+from core.chat2edit.models.point import Point
+from core.chat2edit.models.scribble import Scribble
+from core.chat2edit.models.text import Text
 from core.chat2edit.models.referent import Referent
 from utils.factories import create_image_filename
 from utils.image import convert_data_url_to_image, convert_image_to_data_url
 
+Entity: ClassVar = Annotated[Union["Image", Object, Box, Point, Scribble, Text], Field(discriminator="type")]
 
 class Image(FabricGroup, Referent):
     src: Optional[str] = Field(default=None, description="Image source URL or data")
     filename: str = Field(
         default_factory=create_image_filename, description="Image filename"
+    )
+
+    objects: List[Entity] = Field(
+        default_factory=list, description="Child objects in the image"
     )
 
     def from_image(image: PILImage) -> "Image":

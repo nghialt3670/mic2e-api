@@ -9,15 +9,16 @@ from core.chat2edit.models.point import Point
 from core.chat2edit.models.text import Text
 from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import MaskBasedImageInpainter
-from utils.image import convert_data_url_to_image
+from utils.image import convert_data_url_to_image, expand_mask_image
 
 
 async def inpaint_objects(image: Image, objects: List[Object]) -> Image:
     """Inpaint objects in the image."""
     predictor_manager = get_predictor_manager()
-    composite_mask = create_composite_mask(objects)
+    composite_mask = create_composite_mask(image, objects)
+    expanded_mask = expand_mask_image(composite_mask)
     async with predictor_manager.get_predictor(MaskBasedImageInpainter) as inpainter:
-        image.set_image(inpainter.inpaint_with_mask(image.get_image(), composite_mask))
+        image.set_image(inpainter.inpaint_with_mask(image.get_image(), expanded_mask))
 
     for object in objects:
         object.is_inpainted = True
@@ -41,24 +42,16 @@ async def inpaint_uninpainted_objects_in_entities(
     return image
 
 
-def create_composite_mask(objects: List[Object]) -> PILImage:
+def create_composite_mask(image: Image, objects: List[Object]) -> PILImage:
     """Create a composite mask from multiple objects."""
     if not objects:
         raise ValueError("Cannot create mask from empty object list")
 
     # Use the first object's dimensions as base
-    mask = PILImage.new("L", (objects[0].width, objects[0].height), 0)
+    mask = PILImage.new("L", (int(image.width), int(image.height)), 0)
     for object in objects:
-        # Convert object mask to PIL Image if needed
-        if hasattr(object, "mask"):
-            object_mask = object.mask
-        else:
-            # If object doesn't have mask attribute, create one from src
-            if hasattr(object, "src") and object.src:
-                object_image = convert_data_url_to_image(object.src)
-                object_mask = object_image.convert("RGBA").getchannel("A")
-            else:
-                continue
-
+        object_image = convert_data_url_to_image(object.src)
+        object_mask = object_image.convert("RGBA").getchannel("A")
         mask.paste(object_mask, (int(object.left), int(object.top)))
+
     return mask

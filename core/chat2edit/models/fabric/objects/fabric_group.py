@@ -1,4 +1,4 @@
-from typing import Annotated, ClassVar, List, Union
+from typing import Annotated, ClassVar, List, Literal, Union
 
 from pydantic import BaseModel, Field
 
@@ -20,7 +20,7 @@ class LayoutManager(BaseModel):
 class FabricGroup(FabricObject):
     """Group object in Fabric.js that contains multiple objects."""
 
-    type: str = Field(default="Group", description="Object type")
+    type: Literal["Group"] = Field(default="Group", description="Object type")
 
     # Group-specific properties
     subTargetCheck: bool = Field(

@@ -6,6 +6,7 @@ from chat2edit.execution.decorators import (
     feedback_unexpected_error,
 )
 from chat2edit.execution.exceptions import FeedbackException
+from PIL import Image as PILImage
 
 from core.chat2edit.feedbacks import LabelBasedObjectExtractionQuantityMismatchFeedback
 from core.chat2edit.models import Image, Object
@@ -14,7 +15,7 @@ from core.inference.predictors import (
     LabelBasedObjectSegmenter,
     LabelBasedSegmentedObject,
 )
-from utils.image import convert_image_to_data_url
+from utils.image import convert_image_to_data_url, extract_masked_region
 
 
 @feedback_ignored_return_value
@@ -38,21 +39,32 @@ async def extract_objects_by_label(
             )
         )
 
-    objects = list(
-        map(create_object_from_label_based_segmented_object, segmented_objects)
-    )
+    original_image = image.get_image()
+    objects = [
+        create_object_from_label_based_segmented_object(obj, original_image)
+        for obj in segmented_objects
+    ]
     image.add_objects(objects)
     return objects
 
 
 def create_object_from_label_based_segmented_object(
     segmented_object: LabelBasedSegmentedObject,
+    original_image: PILImage.Image,
 ) -> Object:
     object = Object()
-    object.src = convert_image_to_data_url(segmented_object.mask)
-    object.width = segmented_object.mask.width
-    object.height = segmented_object.mask.height
-    object.left = segmented_object.bbox[0]
-    object.top = segmented_object.bbox[1]
+    
+    # Extract the masked region from the original image and crop to bounding box
+    obj_image = extract_masked_region(
+        original_image, segmented_object.mask, segmented_object.bbox
+    )
+    object.src = convert_image_to_data_url(obj_image)
+    
+    # Set dimensions from bounding box
+    bbox = segmented_object.bbox
+    object.width = bbox[2] - bbox[0]
+    object.height = bbox[3] - bbox[1]
+    object.left = bbox[0]
+    object.top = bbox[1]
     object.label_to_score[segmented_object.label] = segmented_object.score
     return object

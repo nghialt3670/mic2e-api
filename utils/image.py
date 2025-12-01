@@ -54,3 +54,66 @@ def convert_data_url_to_image(data_url: str) -> Image.Image:
 
     image_data = base64.b64decode(match.group(2))
     return Image.open(io.BytesIO(image_data))
+
+
+def expand_mask_image(mask_image: Image.Image, iterations: int = 10) -> Image.Image:
+    mask_array = np.array(mask_image)
+    binary_mask = (mask_array > 127).astype(np.uint8)
+    expanded_mask = binary_dilation(binary_mask, iterations=iterations).astype(np.uint8)
+    expanded_mask = expanded_mask * 255
+    return Image.fromarray(expanded_mask)
+
+
+def extract_masked_region(
+    original_image: Image.Image,
+    mask: Image.Image,
+    bbox: Tuple[int, int, int, int],
+) -> Image.Image:
+    """Extract the masked region from the original image and crop to bounding box.
+    
+    Args:
+        original_image: The original full-size image
+        mask: The binary mask (full image size, L mode)
+        bbox: Bounding box (x1, y1, x2, y2)
+    
+    Returns:
+        Cropped image with only the masked region visible
+    """
+    # Ensure original image is RGB/RGBA
+    if original_image.mode not in ("RGB", "RGBA"):
+        original_image = original_image.convert("RGB")
+    
+    # Convert mask to binary (0 or 255)
+    if mask.mode != "L":
+        mask = mask.convert("L")
+    
+    # Create a copy of the original image
+    masked_image = original_image.copy()
+    
+    # Apply mask: set pixels outside mask to transparent/black
+    if masked_image.mode == "RGB":
+        masked_image = masked_image.convert("RGBA")
+    
+    # Convert mask to numpy array for processing
+    mask_array = np.array(mask)
+    # Normalize mask to 0-1 range
+    mask_array = (mask_array > 127).astype(np.uint8)
+    
+    # Apply mask to alpha channel
+    img_array = np.array(masked_image)
+    img_array[:, :, 3] = img_array[:, :, 3] * mask_array
+    
+    masked_image = Image.fromarray(img_array)
+    
+    # Crop to bounding box
+    x1, y1, x2, y2 = bbox
+    cropped_image = masked_image.crop((x1, y1, x2, y2))
+    
+    # Convert back to RGB if needed (remove alpha if fully opaque)
+    if cropped_image.mode == "RGBA":
+        # Check if we can convert to RGB (all pixels are opaque)
+        alpha = np.array(cropped_image.split()[3])
+        if np.all(alpha == 255):
+            cropped_image = cropped_image.convert("RGB")
+    
+    return cropped_image

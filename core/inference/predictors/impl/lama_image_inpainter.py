@@ -17,7 +17,6 @@ class LamaImageInpainter(MaskBasedImageInpainter):
 
     @override
     def load(self, device: str) -> None:
-        return
         self.model = (
             torch.jit.load(self.model_path, map_location=device)
             if self.model is None
@@ -42,8 +41,6 @@ class LamaImageInpainter(MaskBasedImageInpainter):
 
     @override
     def inpaint_with_mask(self, image: Image.Image, mask: Image.Image) -> Image.Image:
-        return image
-
         if self.model is None:
             raise RuntimeError("Model not loaded. Call load() before inpainting.")
 

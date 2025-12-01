@@ -9,11 +9,35 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # ------- Write VPN config -------
+      - name: Write VPN config file
+        run: |
+          echo "${{ secrets.VPN_CONFIG }}" > vpn.ovpn
+          chmod 600 vpn.ovpn
+
+      # ------- Install OpenVPN -------
+      - name: Install OpenVPN
+        run: sudo apt-get update && sudo apt-get install -y openvpn
+
+      # ------- Start OpenVPN in background -------
+      - name: Connect to OpenVPN
+        run: |
+          sudo openvpn --config vpn.ovpn \
+            --auth-user-pass <(printf "%s\n%s" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}") \
+            --daemon
+          
+          # wait for VPN interface to fully initialize
+          sleep 15
+          
+          echo "VPN connected. Checking IP..."
+          ip addr
+          ip route
+
+      # ------- Deploy via SSH -------
       - name: Deploy to Dev Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -23,17 +47,14 @@ jobs:
           script: |
             cd ${{ secrets.DEV_SERVER_PATH }}
             cd mic2e-api
-            
+
             git pull
 
-            # Stop existing screen session if running
             screen -S mic2e-api -X quit || true
 
-            # Start new screen session with conda env and API process
             screen -dmS mic2e-api bash -lc "
               source ~/.bashrc
               conda activate mic2e
               cd mic2e-api
               python run.py
             "
-

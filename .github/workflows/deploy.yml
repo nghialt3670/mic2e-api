@@ -9,35 +9,49 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ------- Write VPN config -------
+      # --- Write VPN config to file ---
       - name: Write VPN config file
         run: |
           echo "${{ secrets.VPN_CONFIG }}" > vpn.ovpn
           chmod 600 vpn.ovpn
 
-      # ------- Install OpenVPN -------
+      # --- Write VPN username/password to file (to avoid log redaction) ---
+      - name: Write VPN auth file
+        run: |
+          printf "%s\n%s" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}" > auth.txt
+          chmod 600 auth.txt
+
+      # --- Install OpenVPN ---
       - name: Install OpenVPN
         run: sudo apt-get update && sudo apt-get install -y openvpn
 
-      # ------- Start OpenVPN in background -------
+      # --- Connect to VPN ---
       - name: Connect to OpenVPN
         run: |
-          sudo openvpn --config vpn.ovpn \
-            --auth-user-pass <(printf "%s\n%s" "${{ secrets.VPN_USERNAME }}" "${{ secrets.VPN_PASSWORD }}") \
-            --daemon
-          
-          # wait for VPN interface to fully initialize
-          sleep 15
-          
-          echo "VPN connected. Checking IP..."
-          ip addr
-          ip route
+          echo "Starting OpenVPN..."
+          sudo openvpn --config vpn.ovpn --auth-user-pass auth.txt --daemon
 
-      # ------- Deploy via SSH -------
+          echo "Waiting for VPN tunnel to initialize..."
+          sleep 15
+
+          echo "Checking IP addresses..."
+          ip addr || true
+
+          echo "Checking routing table..."
+          ip route || true
+
+      # --- Optional: test connection to Dev server internal IP ---
+      - name: Test connectivity to Dev Server
+        run: |
+          echo "Pinging Dev server..."
+          ping -c 4 ${{ secrets.DEV_SERVER_HOST }} || true
+
+      # --- SSH Deploy ---
       - name: Deploy to Dev Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -50,8 +64,10 @@ jobs:
 
             git pull
 
+            # Stop existing screen session if running
             screen -S mic2e-api -X quit || true
 
+            # Start new screen session
             screen -dmS mic2e-api bash -lc "
               source ~/.bashrc
               conda activate mic2e

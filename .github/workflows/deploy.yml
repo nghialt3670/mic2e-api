@@ -72,5 +72,6 @@ jobs:
               source ~/.bashrc
               conda activate mic2e
               cd mic2e-api
+              export PORT=4000
               python run.py
             "

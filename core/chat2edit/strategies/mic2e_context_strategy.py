@@ -142,14 +142,16 @@ class Mic2eContextStrategy(ContextStrategy):
                     if getattr(normalized_obj, "is_ephemeral", False):
                         attachment.remove_object(obj)
 
-            # If this attachment was *not* referenced, create image_i
+            # If this attachment was *not* referenced, create image_<idprefix>
             attachment_was_referenced = any(
                 ref.get("processed") and ref["label"] == "image"
                 for ref in reference_objects.values()
             )
 
             if not attachment_was_referenced:
-                variable_name = self._get_image_variable_name(context)
+                variable_name = self._get_image_variable_name(
+                    context, getattr(attachment, "id", None)
+                )
                 context[variable_name] = Attachment(attachment)
                 paths.append(variable_name)
 
@@ -191,8 +193,27 @@ class Mic2eContextStrategy(ContextStrategy):
             attachments=list(map(lambda x: path_to_value(x, context), message.paths)),
         )
 
-    def _get_image_variable_name(self, context: Dict[str, Any]) -> str:
+    def _get_image_variable_name(
+        self, context: Dict[str, Any], attachment_id: str | None
+    ) -> str:
+        """
+        Generate a stable image variable name based on the attachment id.
+
+        If an attachment id is provided, use the first segment of the UUID as a
+        suffix (e.g. image_5a00b15a). If that name is already taken or no id is
+        available, fall back to an incrementing index.
+        """
         existing_variable_names = set(context.keys())
+
+        if attachment_id:
+            uuid_prefix = (
+                attachment_id.split("-")[0] if "-" in attachment_id else attachment_id[:8]
+            )
+            candidate = f"image_{uuid_prefix}"
+            if candidate not in existing_variable_names:
+                return candidate
+
+        # Fallback: image_1, image_2, ...
         for i in range(1, 100):
             variable_name = f"image_{i}"
             if variable_name not in existing_variable_names:

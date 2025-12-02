@@ -6,6 +6,7 @@ from chat2edit.execution.decorators import (
     feedback_unexpected_error,
 )
 from chat2edit.execution.exceptions import FeedbackException
+from chat2edit.prompting.stubbing.decorators import exclude_coroutine
 from PIL import Image as PILImage
 
 from core.chat2edit.feedbacks import LabelBasedObjectExtractionQuantityMismatchFeedback
@@ -21,6 +22,7 @@ from utils.image import convert_image_to_data_url, extract_masked_region
 @feedback_ignored_return_value
 @feedback_unexpected_error
 @feedback_invalid_parameter_type
+@exclude_coroutine
 async def extract_objects_by_label(
     image: Image, label: str, num_expected_objects: int
 ) -> List[Object]:

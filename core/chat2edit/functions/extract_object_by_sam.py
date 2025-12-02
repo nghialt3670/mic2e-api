@@ -1,5 +1,7 @@
 from typing import List, Optional, Tuple
 
+import numpy as np
+
 from chat2edit.execution.decorators import (
     feedback_ignored_return_value,
     feedback_invalid_parameter_type,
@@ -7,25 +9,33 @@ from chat2edit.execution.decorators import (
     feedback_unexpected_error,
 )
 from PIL import Image as PILImage, ImageDraw
-
+from chat2edit.prompting.stubbing.decorators import exclude_coroutine
 from core.chat2edit.models import Box, Image, Object, Point, Scribble
 from core.inference.manager.global_manager import get_predictor_manager
 from core.inference.predictors import SamBasedObjectSegmenter, SamBasedSegmentedObject
 from utils.image import convert_image_to_data_url, extract_masked_region
 
 
-# @feedback_ignored_return_value
-# @feedback_unexpected_error
-# @feedback_invalid_parameter_type
-# @feedback_missing_all_optional_parameters(["box", "scribble", "points"])
+@feedback_ignored_return_value
+@feedback_unexpected_error
+@feedback_invalid_parameter_type
+@feedback_missing_all_optional_parameters(["box", "positive_points", "negative_points", "positive_mask", "negative_mask"])
+@exclude_coroutine
 async def extract_object_by_sam(
     image: Image,
     box: Optional[Box] = None,
-    mask: Optional[Scribble] = None,
-    points: Optional[List[Point]] = None,
+    positive_points: Optional[List[Tuple[int, int]]] = None,
+    negative_points: Optional[List[Tuple[int, int]]] = None,
+    positive_mask: Optional[Scribble] = None,
+    negative_mask: Optional[Scribble] = None,
 ) -> Object:
-    box_coords, mask_image, positive_points, negative_points = (
-        create_sam_input_parameters(box, mask, points, image)
+    box_coords, mask_image, positive_points, negative_points = create_sam_input_parameters(
+        box=box,
+        positive_points=positive_points,
+        negative_points=negative_points,
+        positive_mask=positive_mask,
+        negative_mask=negative_mask,
+        image=image,
     )
 
     async with get_predictor_manager().get_predictor(
@@ -48,14 +58,16 @@ async def extract_object_by_sam(
 
 def create_sam_input_parameters(
     box: Optional[Box] = None,
-    mask: Optional[Scribble] = None,
-    points: Optional[List[Point]] = None,
+    positive_points: Optional[List[Tuple[int, int]]] = None,
+    negative_points: Optional[List[Tuple[int, int]]] = None,
+    positive_mask: Optional[Scribble] = None,
+    negative_mask: Optional[Scribble] = None,
     image: Optional[Image] = None,
 ) -> Tuple[
     Optional[Tuple[int, int, int, int]],
     Optional[PILImage.Image],
-    Optional[List[Tuple[int, int]]],
-    Optional[List[Tuple[int, int]]],
+    List[Tuple[int, int]],
+    List[Tuple[int, int]],
 ]:
     box_coords = None
     if box is not None and image is not None:
@@ -75,17 +87,46 @@ def create_sam_input_parameters(
             int(adjusted_top + box.height),
         )
 
-    mask_image = (
-        convert_scribble_to_mask_image(mask, image)
-        if mask is not None
-        else None
-    )
+    # We no longer take a neutral mask parameter here; rely solely on
+    # positive/negative masks and points.
+    mask_image: Optional[PILImage.Image] = None
 
-    positive_points, negative_points = create_negative_and_positive_points_from_points(
-        points or [], image
-    )
+    # Start from explicitly provided positive/negative points (if any)
+    pos = list(positive_points or [])
+    neg = list(negative_points or [])
 
-    return box_coords, mask_image, positive_points, negative_points
+    # Additionally convert positive/negative masks (scribbles) into point prompts
+    if positive_mask is not None and image is not None:
+        pos_mask_img = convert_scribble_to_mask_image(positive_mask, image)
+        pos.extend(_mask_image_to_points(pos_mask_img))
+
+    if negative_mask is not None and image is not None:
+        neg_mask_img = convert_scribble_to_mask_image(negative_mask, image)
+        neg.extend(_mask_image_to_points(neg_mask_img))
+
+    return box_coords, mask_image, pos, neg
+
+
+def _mask_image_to_points(mask: PILImage.Image, num_points: int = 20) -> List[Tuple[int, int]]:
+    """
+    Sample a set of point coordinates from a binary mask image.
+
+    This approximates SAM's behavior of turning masks into point prompts.
+    """
+    if mask.mode != "L":
+        mask = mask.convert("L")
+    mask_arr = np.array(mask)
+    ys, xs = np.where(mask_arr > 0)
+    if xs.size == 0:
+        return []
+
+    # Uniformly sample indices across all mask pixels (no randomness for determinism)
+    count = min(num_points, xs.size)
+    if count <= 0:
+        return []
+    indices = np.linspace(0, xs.size - 1, count, dtype=int)
+    points = [(int(xs[i]), int(ys[i])) for i in indices]
+    return points
 
 
 def convert_scribble_to_mask_image(
@@ -196,9 +237,13 @@ def create_negative_and_positive_points_from_points(
         adjusted_top = point.top + img_height / 2
         point_coords = (int(adjusted_left), int(adjusted_top))
 
-        if point.segment_type == "include":
+        # Some callers (e.g. notebooks) create Point objects without segment_type.
+        # Default those to positive ("include") points to preserve previous behavior.
+        segment_type = getattr(point, "segment_type", None) or "include"
+
+        if segment_type == "include":
             positive_points.append(point_coords)
-        elif point.segment_type == "exclude":
+        elif segment_type == "exclude":
             negative_points.append(point_coords)
 
     return positive_points, negative_points

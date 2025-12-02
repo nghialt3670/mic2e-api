@@ -2,10 +2,10 @@ from typing import Dict, List, Union
 
 from pydantic import TypeAdapter
 
-from core.chat2edit.models import Box, Image, Object, Point, Text
+from core.chat2edit.models import Box, Image, Object, Point, Scribble, Text
 from services.context_serialization_service import ContextSerializationService
 
-ContextBaseValueType = Union[Image, Object, Box, Point, Text, int, str, float, bool]
+ContextBaseValueType = Union[Image, Object, Box, Point, Text, Scribble, int, str, float, bool]
 ContextType = Dict[str, Union[ContextBaseValueType, List[ContextBaseValueType]]]
 
 

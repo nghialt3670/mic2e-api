@@ -10,13 +10,14 @@ from chat2edit.execution.decorators import (
 
 from core.chat2edit.models import Box, Image, Object, Point, Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
-
+from chat2edit.prompting.stubbing.decorators import exclude_coroutine
 
 @feedback_ignored_return_value
 @deepcopy_parameter("image")
 @feedback_unexpected_error
-# @feedback_invalid_parameter_type
+@feedback_invalid_parameter_type
 @feedback_empty_list_parameters(["entities"])
+@exclude_coroutine
 async def remove_entities(
     image: Image, entities: List[Union[Image, Object, Text, Box, Point]]
 ) -> Image:

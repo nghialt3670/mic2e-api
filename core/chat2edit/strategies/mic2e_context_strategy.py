@@ -15,7 +15,20 @@ from pydantic import TypeAdapter
 from core.chat2edit.models import Box, Image, Object, Point, Scribble, Text
 from core.chat2edit.models.fabric.objects import FabricRect, FabricText
 
-CONTEXT_VALUE_BASE_TYPE = Union[Image, Object, Box, Point, Text, int, str, float, bool]
+CONTEXT_VALUE_BASE_TYPE = Union[
+    Image,
+    Object,
+    Box,
+    Point,
+    Text,
+    Scribble,
+    int,
+    str,
+    float,
+    bool,
+]
+# Single allowed item type (value or list of values) used for filtering
+CONTEXT_ITEM_TYPE = Union[CONTEXT_VALUE_BASE_TYPE, List[CONTEXT_VALUE_BASE_TYPE]]
 CONTEXT_TYPE = Dict[str, Union[CONTEXT_VALUE_BASE_TYPE, List[CONTEXT_VALUE_BASE_TYPE]]]
 
 
@@ -24,14 +37,23 @@ class Mic2eContextStrategy(ContextStrategy):
         super().__init__()
 
     def filter_context(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        filtered_context = {}
-        type_adapter = TypeAdapter(CONTEXT_TYPE)
-        for k, v in context.items():
+        filtered_context: Dict[str, Any] = {}
+        # We validate individual values (or lists), not the whole dict
+        item_adapter = TypeAdapter(CONTEXT_ITEM_TYPE)
+
+        for key, value in context.items():
+            # If this is an Attachment, unwrap to its underlying Pydantic model
+            from chat2edit.context.attachments import Attachment
+
+            base_value = value.__obj__ if isinstance(value, Attachment) else value
+
             try:
-                type_adapter.validate_python(v)
-                filtered_context[k] = v
-            except Exception as e:
-                pass
+                item_adapter.validate_python(base_value)
+                filtered_context[key] = base_value
+            except Exception:
+                # Drop non-serializable / unsupported values (functions, etc.)
+                continue
+
         return filtered_context
 
     def contextualize_message(

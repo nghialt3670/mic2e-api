@@ -60,7 +60,8 @@ async def chat(
     )
 
     context_bytes = context_serialization_service.serialize(updated_context)
-    context_path = f"contexts/{create_uuid4()}.context.json"
+    # Use a simple file name as path; bucket already encodes "contexts"
+    context_path = f"{create_uuid4()}.context.json"
     context_url = await context_storage_service.upload(context_bytes, context_path)
 
     if not response_message:

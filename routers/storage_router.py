@@ -2,7 +2,7 @@ import mimetypes
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
 
-from deps import get_attachment_storage_service
+from deps import get_attachment_storage_service, get_context_storage_service
 from schemas import AttachmentModel, ResponseModel
 from services import StorageService
 
@@ -47,5 +47,22 @@ async def download_attachment(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     content_type = mimetypes.guess_type(file_path)[0] or "application/octet-stream"
+    return Response(content=data, media_type=content_type)
+
+
+@storage_router.get(
+    "/storage/contexts/{file_path:path}",
+    summary="Serve context content",
+)
+async def download_context(
+    file_path: str,
+    storage_service: StorageService = Depends(get_context_storage_service),
+) -> Response:
+    try:
+        data = await storage_service.download(file_path)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    content_type = mimetypes.guess_type(file_path)[0] or "application/json"
     return Response(content=data, media_type=content_type)
 

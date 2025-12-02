@@ -25,7 +25,7 @@ from core.chat2edit.utils import get_own_objects
 @feedback_unexpected_error
 @feedback_invalid_parameter_type
 @feedback_empty_list_parameters(["entities"])
-async def apply_filter(
+def apply_filter(
     image: Image,
     filter_name: Literal[
         "blackWhite", "blur", "brightness", "contrast", "invert", "saturation"

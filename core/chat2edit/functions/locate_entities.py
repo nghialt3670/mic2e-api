@@ -8,6 +8,7 @@ from chat2edit.execution.decorators import (
     feedback_mismatch_list_parameters,
     feedback_unexpected_error,
 )
+from chat2edit.prompting.stubbing.decorators import exclude_coroutine
 
 from core.chat2edit.models import Box, Image, Object, Point, Text
 from core.chat2edit.utils import inpaint_uninpainted_objects_in_entities
@@ -36,6 +37,7 @@ Location = Union[
 @feedback_invalid_parameter_type
 @feedback_empty_list_parameters(["entities"])
 @feedback_mismatch_list_parameters(["entities", "locations"])
+@exclude_coroutine
 async def locate_entities(
     image: Image,
     entities: List[Union[Image, Object, Text, Box, Point]],

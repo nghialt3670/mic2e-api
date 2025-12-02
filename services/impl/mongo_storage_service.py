@@ -38,7 +38,9 @@ class MongoStorageService(StorageService):
             upsert=True,
         )
 
-        return self._build_public_url(path)
+        # Return relative path instead of full URL
+        # Frontend will prepend the API host when displaying
+        return f"{self._route_prefix}{quote(path)}"
 
     async def download(self, url_or_path: str) -> bytes:
         path = self._extract_path(url_or_path)

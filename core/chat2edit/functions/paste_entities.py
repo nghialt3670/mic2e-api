@@ -38,7 +38,7 @@ Location = Union[
 @feedback_empty_list_parameters(["entities"])
 @feedback_mismatch_list_parameters(["entities", "locations"])
 @exclude_coroutine
-async def locate_entities(
+async def paste_entities(
     image: Image,
     entities: List[Union[Image, Object, Text, Box, Point]],
     locations: List[Location],
